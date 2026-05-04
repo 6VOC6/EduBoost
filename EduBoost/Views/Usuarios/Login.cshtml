@@ -1,17 +1,42 @@
-﻿<h2>Login</h2>
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
 
-<form method="post">
+<h2 class="mb-3">Iniciar sesion</h2>
 
-    <div>
-        <label>Correo</label>
-        <input name="correo" />
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="alert">@successMessage</div>
+}
+
+<form asp-action="Login" method="post" class="row g-3">
+    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="col-12">
+        <label asp-for="Correo" class="form-label"></label>
+        <input asp-for="Correo" class="form-control" />
+        <span asp-validation-for="Correo" class="text-danger"></span>
     </div>
 
-    <div>
-        <label>Password</label>
-        <input type="password" name="password" />
+    <div class="col-12">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
-    <button type="submit">Entrar</button>
+    <div class="col-12 form-check">
+        <input asp-for="Recordarme" class="form-check-input" />
+        <label asp-for="Recordarme" class="form-check-label"></label>
+    </div>
 
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        <a asp-action="Registro" class="btn btn-link">Crear cuenta</a>
+    </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
