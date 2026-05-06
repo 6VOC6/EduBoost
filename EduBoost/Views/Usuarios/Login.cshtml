@@ -1,41 +1,55 @@
 ﻿@model LoginViewModel
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Iniciar sesion";
 }
 
-<h2 class="mb-3">Iniciar sesion</h2>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5">
+                <h2 class="mb-2">Bienvenido a EduBoost</h2>
+                <p class="text-muted mb-4">Inicia sesion para continuar con tus cursos y asesorias.</p>
 
-@if (TempData["SuccessMessage"] is string successMessage)
-{
-    <div class="alert alert-success" role="alert">@successMessage</div>
-}
+                @if (TempData["SuccessMessage"] is string successMessage)
+                {
+                    <div class="alert alert-success" role="alert">@successMessage</div>
+                }
 
-<form asp-action="Login" method="post" class="row g-3">
-    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (ViewData["ReturnUrl"] is string returnUrl && !string.IsNullOrWhiteSpace(returnUrl))
+                {
+                    <div class="alert alert-info" role="alert">Necesitas iniciar sesion para acceder a la pagina solicitada.</div>
+                }
 
-    <div class="col-12">
-        <label asp-for="Correo" class="form-label"></label>
-        <input asp-for="Correo" class="form-control" />
-        <span asp-validation-for="Correo" class="text-danger"></span>
+                <form asp-action="Login" method="post" class="row g-3" autocomplete="on">
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="col-12">
+                        <label asp-for="Correo" class="form-label"></label>
+                        <input asp-for="Correo" class="form-control" autocomplete="email" placeholder="nombre@correo.com" />
+                        <span asp-validation-for="Correo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12 form-check">
+                        <input asp-for="Recordarme" class="form-check-input" />
+                        <label asp-for="Recordarme" class="form-check-label"></label>
+                    </div>
+
+                    <div class="col-12 d-grid gap-2 d-md-flex">
+                        <button type="submit" class="btn btn-primary px-4">Entrar</button>
+                        <a asp-action="Registro" class="btn btn-outline-secondary">Crear cuenta</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="col-12">
-        <label asp-for="Password" class="form-label"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-
-    <div class="col-12 form-check">
-        <input asp-for="Recordarme" class="form-check-input" />
-        <label asp-for="Recordarme" class="form-check-label"></label>
-    </div>
-
-    <div class="col-12">
-        <button type="submit" class="btn btn-primary">Entrar</button>
-        <a asp-action="Registro" class="btn btn-link">Crear cuenta</a>
-    </div>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

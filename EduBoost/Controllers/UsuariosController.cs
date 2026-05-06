@@ -13,6 +13,11 @@
     public class UsuariosController : Controller
     {
         private readonly EduBoostContext _context;
+        private static readonly HashSet<string> RolesPermitidos = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "Estudiante",
+            "Asesor"
+        };
 
         public UsuariosController(EduBoostContext context)
         {
@@ -33,7 +38,7 @@
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public IActionResult Registro(RegistroViewModel model)
+        public async Task<IActionResult> Registro(RegistroViewModel model)
         {
             if (User.Identity?.IsAuthenticated == true)
             {
@@ -41,9 +46,15 @@
             }
 
             model.Correo = model.Correo?.Trim().ToLowerInvariant() ?? string.Empty;
-            model.Rol = model.Rol?.Trim() ?? "Estudiante";
+            model.Nombre = model.Nombre?.Trim() ?? string.Empty;
+            model.Rol = NormalizarRol(model.Rol);
 
-            if (_context.Usuarios.Any(u => u.Correo == model.Correo))
+            if (!RolesPermitidos.Contains(model.Rol))
+            {
+                ModelState.AddModelError(nameof(RegistroViewModel.Rol), "El rol seleccionado no es valido.");
+            }
+
+            if (await _context.Usuarios.AnyAsync(u => u.Correo.ToLower() == model.Correo))
             {
                 ModelState.AddModelError(nameof(RegistroViewModel.Correo), "Ya existe una cuenta con este correo.");
             }
@@ -60,7 +71,7 @@
                 };
 
                 _context.Usuarios.Add(usuario);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Cuenta creada correctamente. Inicia sesion para continuar.";
                 return RedirectToAction("Login");
@@ -102,6 +113,8 @@
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Correo == model.Correo);
             if (usuario is null || !VerifyPassword(model.Password, usuario.Password))
             {
+                // Pequena demora intencional para dificultar ataques por fuerza bruta.
+                await Task.Delay(600);
                 ModelState.AddModelError(string.Empty, "Correo o contrasena incorrectos.");
                 ViewData["ReturnUrl"] = returnUrl;
                 return View(model);
@@ -112,7 +125,7 @@
                 new(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
                 new(ClaimTypes.Name, usuario.Nombre),
                 new(ClaimTypes.Email, usuario.Correo),
-                new(ClaimTypes.Role, usuario.Rol)
+                new(ClaimTypes.Role, NormalizarRol(usuario.Rol))
             };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
@@ -120,7 +133,12 @@
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal,
-                new AuthenticationProperties { IsPersistent = model.Recordarme });
+                new AuthenticationProperties
+                {
+                    IsPersistent = model.Recordarme,
+                    ExpiresUtc = model.Recordarme ? DateTimeOffset.UtcNow.AddDays(7) : DateTimeOffset.UtcNow.AddHours(8),
+                    AllowRefresh = true
+                });
 
             if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
@@ -170,6 +188,12 @@
             using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA256);
             byte[] inputHash = pbkdf2.GetBytes(32);
             return CryptographicOperations.FixedTimeEquals(inputHash, expectedHash);
+        }
+
+        private static string NormalizarRol(string? rol)
+        {
+            var valor = rol?.Trim() ?? string.Empty;
+            return valor.Equals("Asesor", StringComparison.OrdinalIgnoreCase) ? "Asesor" : "Estudiante";
         }
     }
 }
