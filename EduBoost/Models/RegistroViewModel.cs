@@ -13,7 +13,7 @@ namespace EduBoost.Models
         [Display(Name = "Correo electronico")]
         [Required(ErrorMessage = "El correo es obligatorio.")]
         [EmailAddress(ErrorMessage = "El correo no tiene un formato valido.")]
-        [StringLength(150, ErrorMessage = "El correo no puede exceder 150 caracteres.")]
+        [StringLength(100, ErrorMessage = "El correo no puede exceder 100 caracteres.")]
         public string Correo { get; set; } = string.Empty;
 
         [Display(Name = "Contrasena")]

@@ -1,0 +1,148 @@
+-- ==============================
+-- CREAR BASE DE DATOS
+-- ==============================
+
+CREATE DATABASE EduBoost;
+GO
+
+USE EduBoost;
+GO
+
+
+-- ==============================
+-- TABLA USUARIOS
+-- ==============================
+
+CREATE TABLE Usuarios(
+    IdUsuario INT IDENTITY(1,1) PRIMARY KEY,
+    Nombre NVARCHAR(100) NOT NULL,
+    Correo NVARCHAR(100) UNIQUE NOT NULL,
+    Password NVARCHAR(255) NOT NULL,
+    Rol NVARCHAR(50) NOT NULL,
+    FechaRegistro DATETIME DEFAULT GETDATE()
+);
+GO
+
+
+-- ==============================
+-- TABLA CURSOS
+-- ==============================
+
+CREATE TABLE Cursos(
+    IdCurso INT IDENTITY(1,1) PRIMARY KEY,
+    Nombre NVARCHAR(150) NOT NULL,
+    Descripcion NVARCHAR(500),
+    Profesor NVARCHAR(100),
+    FechaCreacion DATETIME DEFAULT GETDATE()
+);
+GO
+
+
+-- ==============================
+-- TABLA INSCRIPCIONES
+-- ==============================
+
+CREATE TABLE Inscripciones(
+    IdInscripcion INT IDENTITY(1,1) PRIMARY KEY,
+    IdUsuario INT NOT NULL,
+    IdCurso INT NOT NULL,
+    FechaInscripcion DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Inscripciones_Usuarios
+    FOREIGN KEY (IdUsuario)
+    REFERENCES Usuarios(IdUsuario)
+    ON DELETE CASCADE,
+
+    CONSTRAINT FK_Inscripciones_Cursos
+    FOREIGN KEY (IdCurso)
+    REFERENCES Cursos(IdCurso)
+    ON DELETE CASCADE
+);
+GO
+
+
+-- ==============================
+-- TABLA MATERIAL CURSO
+-- ==============================
+
+CREATE TABLE MaterialCurso(
+    IdMaterial INT IDENTITY(1,1) PRIMARY KEY,
+    IdCurso INT NOT NULL,
+    Titulo NVARCHAR(200),
+    TipoMaterial NVARCHAR(50),
+    UrlVideo NVARCHAR(500),
+
+    CONSTRAINT FK_Material_Curso
+    FOREIGN KEY (IdCurso)
+    REFERENCES Cursos(IdCurso)
+    ON DELETE CASCADE
+);
+GO
+
+
+-- ==============================
+-- TABLA PROGRESO
+-- ==============================
+
+CREATE TABLE Progreso(
+    IdProgreso INT IDENTITY(1,1) PRIMARY KEY,
+    IdUsuario INT NOT NULL,
+    IdCurso INT NOT NULL,
+    Porcentaje INT DEFAULT 0,
+    UltimaActualizacion DATETIME,
+
+    CONSTRAINT FK_Progreso_Usuario
+    FOREIGN KEY (IdUsuario)
+    REFERENCES Usuarios(IdUsuario)
+    ON DELETE CASCADE,
+
+    CONSTRAINT FK_Progreso_Curso
+    FOREIGN KEY (IdCurso)
+    REFERENCES Cursos(IdCurso)
+    ON DELETE CASCADE
+);
+GO
+
+
+-- ==============================
+-- DATOS DE PRUEBA
+-- ==============================
+
+INSERT INTO Usuarios (Nombre, Correo, Password, Rol)
+VALUES
+('Admin Sistema', 'admin@eduboost.com', '123456', 'Administrador'),
+('Juan Perez', 'juan@correo.com', '123456', 'Estudiante'),
+('Maria Lopez', 'maria@correo.com', '123456', 'Estudiante');
+GO
+
+
+INSERT INTO Cursos (Nombre, Descripcion, Profesor)
+VALUES
+('Programación Básica', 'Introducción a la programación', 'Ing. Carlos Ruiz'),
+('Base de Datos', 'Fundamentos de SQL y bases de datos', 'Ing. Ana Torres'),
+('Matemáticas Discretas', 'Lógica y estructuras matemáticas', 'Dr. Luis Gomez');
+GO
+
+
+INSERT INTO Inscripciones (IdUsuario, IdCurso)
+VALUES
+(2,1),
+(2,2),
+(3,1);
+GO
+
+
+INSERT INTO MaterialCurso (IdCurso, Titulo, TipoMaterial, UrlVideo)
+VALUES
+(1,'Introducción a la programación','Video','https://www.youtube.com/watch?v=zOjov-2OZ0E'),
+(1,'Variables y tipos de datos','Video','https://www.youtube.com/watch?v=rfscVS0vtbw'),
+(2,'Introducción a SQL','Video','https://www.youtube.com/watch?v=HXV3zeQKqGY');
+GO
+
+
+INSERT INTO Progreso (IdUsuario, IdCurso, Porcentaje, UltimaActualizacion)
+VALUES
+(2,1,30,GETDATE()),
+(2,2,10,GETDATE()),
+(3,1,50,GETDATE());
+GO

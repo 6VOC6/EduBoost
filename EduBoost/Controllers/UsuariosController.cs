@@ -16,7 +16,8 @@
         private static readonly HashSet<string> RolesPermitidos = new(StringComparer.OrdinalIgnoreCase)
         {
             "Estudiante",
-            "Asesor"
+            "Asesor",
+            "Administrador"
         };
 
         public UsuariosController(EduBoostContext context)
@@ -120,6 +121,19 @@
                 return View(model);
             }
 
+            if (EsPasswordLegado(usuario.Password))
+            {
+                usuario.Password = HashPassword(model.Password);
+                await _context.SaveChangesAsync();
+            }
+
+            if (!RolesPermitidos.Contains(usuario.Rol))
+            {
+                ModelState.AddModelError(string.Empty, "El usuario tiene un rol no permitido. Contacta al administrador.");
+                ViewData["ReturnUrl"] = returnUrl;
+                return View(model);
+            }
+
             var claims = new List<Claim>
             {
                 new(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
@@ -167,6 +181,11 @@
 
         private static bool VerifyPassword(string password, string storedValue)
         {
+            if (EsPasswordLegado(storedValue))
+            {
+                return string.Equals(password, storedValue, StringComparison.Ordinal);
+            }
+
             var parts = storedValue.Split(':', 2);
             if (parts.Length != 2)
             {
@@ -193,7 +212,17 @@
         private static string NormalizarRol(string? rol)
         {
             var valor = rol?.Trim() ?? string.Empty;
+            if (valor.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Administrador";
+            }
+
             return valor.Equals("Asesor", StringComparison.OrdinalIgnoreCase) ? "Asesor" : "Estudiante";
+        }
+
+        private static bool EsPasswordLegado(string storedValue)
+        {
+            return !storedValue.Contains(':');
         }
     }
 }

@@ -19,6 +19,7 @@ html {
 
 body {
   margin-bottom: 60px;
+  background: linear-gradient(180deg, #f7f9fd 0%, #eef3fb 100%);
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -28,4 +29,18 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+.auth-shell {
+  min-height: calc(100vh - 220px);
+  align-items: center;
+}
+
+.auth-card {
+  border-radius: 1rem;
+}
+
+.auth-card .card-body {
+  background: #ffffff;
+  border-radius: 1rem;
 }

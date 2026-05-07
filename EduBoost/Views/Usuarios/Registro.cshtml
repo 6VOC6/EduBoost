@@ -3,38 +3,46 @@
     ViewData["Title"] = "Crear cuenta";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-10 col-lg-8">
-        <div class="card shadow-sm border-0">
+<div class="auth-shell row justify-content-center">
+    <div class="col-md-11 col-lg-9 col-xl-8">
+        <div class="card auth-card border-0 shadow">
             <div class="card-body p-4 p-md-5">
-                <h2 class="mb-2">Crear cuenta en EduBoost</h2>
-                <p class="text-muted mb-4">Registra tus datos para acceder a cursos, asesorias y seguimiento academico.</p>
+                <div class="text-center mb-4">
+                    <h2 class="mb-2">Crear cuenta en EduBoost</h2>
+                    <p class="text-muted mb-0">Registra tus datos para acceder a cursos, asesorias y seguimiento academico.</p>
+                </div>
 
-                <form asp-action="Registro" method="post" class="row g-3" autocomplete="on">
+                <form asp-action="Registro" method="post" class="row g-3" autocomplete="on" novalidate>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <div class="col-12">
                         <label asp-for="Nombre" class="form-label"></label>
-                        <input asp-for="Nombre" class="form-control" autocomplete="name" placeholder="Ej. Maria Lopez" />
+                        <input asp-for="Nombre" class="form-control form-control-lg" autocomplete="name" placeholder="Ej. Maria Lopez" />
                         <span asp-validation-for="Nombre" class="text-danger"></span>
                     </div>
 
                     <div class="col-12">
                         <label asp-for="Correo" class="form-label"></label>
-                        <input asp-for="Correo" class="form-control" autocomplete="email" placeholder="nombre@correo.com" />
+                        <input asp-for="Correo" class="form-control form-control-lg" autocomplete="email" placeholder="nombre@correo.com" />
                         <span asp-validation-for="Correo" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
                         <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                        <div class="input-group">
+                            <input asp-for="Password" class="form-control form-control-lg" autocomplete="new-password" id="registro-password" />
+                            <button type="button" class="btn btn-outline-secondary" data-password-toggle="#registro-password">Mostrar</button>
+                        </div>
                         <div class="form-text">Usa minimo 8 caracteres con mayuscula, minuscula y numero.</div>
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
                         <label asp-for="ConfirmarPassword" class="form-label"></label>
-                        <input asp-for="ConfirmarPassword" class="form-control" autocomplete="new-password" />
+                        <div class="input-group">
+                            <input asp-for="ConfirmarPassword" class="form-control form-control-lg" autocomplete="new-password" id="registro-confirm-password" />
+                            <button type="button" class="btn btn-outline-secondary" data-password-toggle="#registro-confirm-password">Mostrar</button>
+                        </div>
                         <span asp-validation-for="ConfirmarPassword" class="text-danger"></span>
                     </div>
 
@@ -47,8 +55,8 @@
                         <span asp-validation-for="Rol" class="text-danger"></span>
                     </div>
 
-                    <div class="col-12 d-grid gap-2 d-md-flex">
-                        <button type="submit" class="btn btn-primary px-4">Registrarme</button>
+                    <div class="col-12 d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Registrarme</button>
                         <a asp-action="Login" class="btn btn-outline-secondary">Ya tengo cuenta</a>
                     </div>
                 </form>
@@ -59,4 +67,15 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll("[data-password-toggle]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                var target = document.querySelector(button.getAttribute("data-password-toggle"));
+                if (!target) return;
+                var showing = target.type === "text";
+                target.type = showing ? "password" : "text";
+                button.textContent = showing ? "Mostrar" : "Ocultar";
+            });
+        });
+    </script>
 }
