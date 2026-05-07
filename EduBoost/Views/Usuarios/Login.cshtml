@@ -1,25 +1,31 @@
-﻿@model LoginViewModel
+@model LoginViewModel
 @{
     ViewData["Title"] = "Iniciar sesion";
 }
 
 <div class="auth-shell row justify-content-center">
-    <div class="col-md-9 col-lg-7 col-xl-6">
-        <div class="card auth-card border-0 shadow">
+    <div class="col-md-9 col-lg-7 col-xl-5">
+        <div class="card auth-card border-0 shadow-lg">
             <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <h2 class="mb-2">Bienvenido a EduBoost</h2>
-                    <p class="text-muted mb-0">Inicia sesion para continuar con tus cursos y asesorias.</p>
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3 mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-lock" viewBox="0 0 16 16">
+                          <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 5.996V14H3s-1 0-1-1 1-4 6-4c.564 0 1.077.038 1.544.107a4.524 4.524 0 0 0-.803.918A10.46 10.46 0 0 0 3.2 10c-.1.284-.24.723-.24 1.2 0 .21.08.39.24.514C3.513 12.015 4.6 12.996 8 12.996Z"/>
+                          <path d="M14 10a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2h3Zm-3 2v1h3v-1h-3Z"/>
+                        </svg>
+                    </div>
+                    <h2 class="fw-bold mb-1">Bienvenido de nuevo</h2>
+                    <p class="text-muted mb-0">Inicia sesión para continuar con tus cursos</p>
                 </div>
 
                 @if (TempData["SuccessMessage"] is string successMessage)
                 {
-                    <div class="alert alert-success" role="alert">@successMessage</div>
+                    <div class="alert alert-success bg-success bg-opacity-10 border-0 text-success" role="alert">@successMessage</div>
                 }
 
                 @if (ViewData["ReturnUrl"] is string returnUrl && !string.IsNullOrWhiteSpace(returnUrl))
                 {
-                    <div class="alert alert-info" role="alert">Necesitas iniciar sesion para acceder a la pagina solicitada.</div>
+                    <div class="alert alert-info bg-info bg-opacity-10 border-0 text-info" role="alert">Necesitas iniciar sesión para acceder.</div>
                 }
 
                 <form asp-action="Login" method="post" class="row g-3" autocomplete="on" novalidate>
@@ -27,28 +33,40 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <div class="col-12">
-                        <label asp-for="Correo" class="form-label"></label>
-                        <input asp-for="Correo" class="form-control form-control-lg" autocomplete="email" placeholder="nombre@correo.com" />
-                        <span asp-validation-for="Correo" class="text-danger"></span>
+                        <div class="form-floating">
+                            <input asp-for="Correo" class="form-control" autocomplete="email" placeholder="nombre@correo.com" />
+                            <label asp-for="Correo" class="form-label text-muted"></label>
+                        </div>
+                        <span asp-validation-for="Correo" class="text-danger small mt-1"></span>
                     </div>
 
                     <div class="col-12">
-                        <label asp-for="Password" class="form-label"></label>
-                        <div class="input-group">
-                            <input asp-for="Password" class="form-control form-control-lg" autocomplete="current-password" id="login-password" />
-                            <button type="button" class="btn btn-outline-secondary" data-password-toggle="#login-password">Mostrar</button>
+                        <div class="input-group has-validation">
+                            <div class="form-floating flex-grow-1">
+                                <input asp-for="Password" class="form-control" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" autocomplete="current-password" id="login-password" placeholder="Contraseña" />
+                                <label asp-for="Password" class="form-label text-muted"></label>
+                            </div>
+                            <button type="button" class="btn btn-light border border-start-0 text-muted" style="border-top-right-radius: 0.75rem; border-bottom-right-radius: 0.75rem;" data-password-toggle="#login-password">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                </svg>
+                            </button>
+                            <span asp-validation-for="Password" class="text-danger small mt-1 w-100"></span>
                         </div>
-                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
-                    <div class="col-12 form-check">
+                    <div class="col-12 form-check ms-2 mb-2 mt-3">
                         <input asp-for="Recordarme" class="form-check-input" />
-                        <label asp-for="Recordarme" class="form-check-label"></label>
+                        <label asp-for="Recordarme" class="form-check-label text-muted"></label>
                     </div>
 
-                    <div class="col-12 d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
-                        <a asp-action="Registro" class="btn btn-outline-secondary">Crear cuenta</a>
+                    <div class="col-12 d-grid gap-3">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm py-3 fw-semibold rounded-pill">Iniciar Sesión</button>
+                        <div class="text-center mt-2">
+                            <span class="text-muted">¿No tienes una cuenta?</span>
+                            <a asp-action="Registro" class="text-primary text-decoration-none fw-semibold ms-1">Regístrate aquí</a>
+                        </div>
                     </div>
                 </form>
             </div>

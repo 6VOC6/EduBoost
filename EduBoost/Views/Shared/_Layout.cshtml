@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,42 +11,50 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EduBoost</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light fixed-top mb-3">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-rocket-takeoff-fill text-primary me-2" viewBox="0 0 16 16">
+                      <path d="M12.17 9.53c2.307-2.308 2.307-6.05-.008-8.356-.632-.632-1.468-1.026-2.368-1.124-.877-.095-1.77.106-2.483.56L6.16 1.838A3.003 3.003 0 0 0 4.108 3.82l-.46.46a3 3 0 0 0-1.042 2.052L1.51 9.42c-.563.856-.47 1.996.22 2.757l.635.7a2 2 0 0 0 2.87 0l2.308-2.308c.516-.516.815-1.218.84-1.95.025-.733-.227-1.442-.71-1.99a.5.5 0 0 1 .74-.673c.642.705.975 1.636.936 2.593-.039.957-.428 1.884-1.096 2.552l-2.308 2.308a1 1 0 0 1-1.435 0l-.635-.7a1 1 0 0 1-.106-1.38l1.096-3.088c.245-.69.67-1.285 1.233-1.74l.46-.46a2.003 2.003 0 0 1 1.368-1.32l1.15-.36A3.001 3.001 0 0 1 12.17 9.53zM5.5 6.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM1 13.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1-5 0zm2.5-1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
+                    </svg>
+                    EduBoost
+                </a>
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 ms-3">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link px-3" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav align-items-center">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
-                                <span class="nav-link text-dark">Hola, @User.Identity.Name (@(User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value ?? "Usuario"))</span>
+                                <span class="nav-link me-3 fw-bold text-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-circle me-1" viewBox="0 0 16 16">
+                                      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                      <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                                    </svg>
+                                    @User.Identity.Name (@(User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value ?? "Usuario"))
+                                </span>
                             </li>
                             <li class="nav-item">
                                 <form asp-controller="Usuarios" asp-action="Logout" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-link nav-link text-dark border-0">Cerrar sesion</button>
+                                    <button type="submit" class="btn btn-outline-danger border-0 rounded-pill px-4 fw-semibold shadow-sm">Cerrar Sesión</button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Usuarios" asp-action="Login">Login</a>
+                                <a class="nav-link px-3" asp-controller="Usuarios" asp-action="Login">Iniciar Sesión</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Usuarios" asp-action="Registro">Registro</a>
+                            <li class="nav-item ms-2">
+                                <a class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm" asp-controller="Usuarios" asp-action="Registro">Regístrate</a>
                             </li>
                         }
                     </ul>
@@ -54,15 +62,15 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container" style="margin-top: 80px;">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - EduBoost - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="footer text-muted py-4 mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2026 - EduBoost - Plataforma Web de Apoyo Académico</p>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

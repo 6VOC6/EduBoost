@@ -1,63 +1,92 @@
-﻿@model RegistroViewModel
+@model RegistroViewModel
 @{
     ViewData["Title"] = "Crear cuenta";
 }
 
 <div class="auth-shell row justify-content-center">
-    <div class="col-md-11 col-lg-9 col-xl-8">
-        <div class="card auth-card border-0 shadow">
+    <div class="col-md-11 col-lg-9 col-xl-7">
+        <div class="card auth-card border-0 shadow-lg">
             <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <h2 class="mb-2">Crear cuenta en EduBoost</h2>
-                    <p class="text-muted mb-0">Registra tus datos para acceder a cursos, asesorias y seguimiento academico.</p>
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3 mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+                          <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                          <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </div>
+                    <h2 class="fw-bold mb-2">Crear cuenta en EduBoost</h2>
+                    <p class="text-muted mb-0">Únete a nuestra plataforma y potencia tu aprendizaje.</p>
                 </div>
 
                 <form asp-action="Registro" method="post" class="row g-3" autocomplete="on" novalidate>
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                    <div class="col-12">
-                        <label asp-for="Nombre" class="form-label"></label>
-                        <input asp-for="Nombre" class="form-control form-control-lg" autocomplete="name" placeholder="Ej. Maria Lopez" />
-                        <span asp-validation-for="Nombre" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-12">
-                        <label asp-for="Correo" class="form-label"></label>
-                        <input asp-for="Correo" class="form-control form-control-lg" autocomplete="email" placeholder="nombre@correo.com" />
-                        <span asp-validation-for="Correo" class="text-danger"></span>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="Nombre" class="form-control" autocomplete="name" placeholder="Ej. Maria Lopez" />
+                            <label asp-for="Nombre" class="form-label text-muted"></label>
+                        </div>
+                        <span asp-validation-for="Nombre" class="text-danger small mt-1"></span>
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="Password" class="form-label"></label>
-                        <div class="input-group">
-                            <input asp-for="Password" class="form-control form-control-lg" autocomplete="new-password" id="registro-password" />
-                            <button type="button" class="btn btn-outline-secondary" data-password-toggle="#registro-password">Mostrar</button>
+                        <div class="form-floating">
+                            <input asp-for="Correo" class="form-control" autocomplete="email" placeholder="nombre@correo.com" />
+                            <label asp-for="Correo" class="form-label text-muted"></label>
                         </div>
-                        <div class="form-text">Usa minimo 8 caracteres con mayuscula, minuscula y numero.</div>
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <span asp-validation-for="Correo" class="text-danger small mt-1"></span>
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="ConfirmarPassword" class="form-label"></label>
-                        <div class="input-group">
-                            <input asp-for="ConfirmarPassword" class="form-control form-control-lg" autocomplete="new-password" id="registro-confirm-password" />
-                            <button type="button" class="btn btn-outline-secondary" data-password-toggle="#registro-confirm-password">Mostrar</button>
+                        <div class="input-group has-validation">
+                            <div class="form-floating flex-grow-1">
+                                <input asp-for="Password" class="form-control" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" autocomplete="new-password" id="registro-password" placeholder="Contraseña" />
+                                <label asp-for="Password" class="form-label text-muted"></label>
+                            </div>
+                            <button type="button" class="btn btn-light border border-start-0 text-muted" style="border-top-right-radius: 0.75rem; border-bottom-right-radius: 0.75rem;" data-password-toggle="#registro-password">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                </svg>
+                            </button>
+                            <span asp-validation-for="Password" class="text-danger small mt-1 w-100"></span>
                         </div>
-                        <span asp-validation-for="ConfirmarPassword" class="text-danger"></span>
+                        <div class="form-text small">Mínimo 8 caracteres, mayúscula, minúscula y número.</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="input-group has-validation">
+                            <div class="form-floating flex-grow-1">
+                                <input asp-for="ConfirmarPassword" class="form-control" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" autocomplete="new-password" id="registro-confirm-password" placeholder="Confirmar" />
+                                <label asp-for="ConfirmarPassword" class="form-label text-muted"></label>
+                            </div>
+                            <button type="button" class="btn btn-light border border-start-0 text-muted" style="border-top-right-radius: 0.75rem; border-bottom-right-radius: 0.75rem;" data-password-toggle="#registro-confirm-password">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                </svg>
+                            </button>
+                            <span asp-validation-for="ConfirmarPassword" class="text-danger small mt-1 w-100"></span>
+                        </div>
                     </div>
 
                     <div class="col-12">
-                        <label asp-for="Rol" class="form-label"></label>
-                        <select asp-for="Rol" class="form-select">
-                            <option value="Estudiante">Estudiante</option>
-                            <option value="Asesor">Asesor</option>
-                        </select>
-                        <span asp-validation-for="Rol" class="text-danger"></span>
+                        <div class="form-floating">
+                            <select asp-for="Rol" class="form-select">
+                                <option value="Estudiante">Estudiante</option>
+                                <option value="Asesor">Asesor</option>
+                            </select>
+                            <label asp-for="Rol" class="form-label text-muted"></label>
+                        </div>
+                        <span asp-validation-for="Rol" class="text-danger small mt-1"></span>
                     </div>
 
-                    <div class="col-12 d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">Registrarme</button>
-                        <a asp-action="Login" class="btn btn-outline-secondary">Ya tengo cuenta</a>
+                    <div class="col-12 mt-4 d-grid gap-3">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm py-3 fw-semibold rounded-pill">Registrarme Ahora</button>
+                        <div class="text-center mt-2">
+                            <span class="text-muted">¿Ya tienes una cuenta?</span>
+                            <a asp-action="Login" class="text-primary text-decoration-none fw-semibold ms-1">Inicia sesión</a>
+                        </div>
                     </div>
                 </form>
             </div>

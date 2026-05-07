@@ -1,0 +1,291 @@
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Id. Proyecto EDUBOOST-001 
+Nombre del Proyecto EduBoost – Plataforma Web de 
+Apoyo Académico 
+Fecha Marzo 2026 
+Elaborado por Victoriano Ortiz Contreras 
+Armando Garcia Magaña 
+Dulce de Jesus Morales Bibian 
+Localización del 
+Documento 
+REPO_DOCS_ EduBoost 
+Documento de Arquitectura del software 
+ 
+ 
+ 
+Índice de Contenido 
+1 INTRODUCCIÓN 3 
+2 RESUMEN ARQUITECTÓNICO 3 
+3 DISEÑO DE ALTO NIVEL DE LA ARQUITECTURA. 6 
+4 DISEÑO DE BAJO NIVEL (DETALLADO) DE LA ARQUITECTURA. 7 
+4.1 VISTA LÓGICA. 8 
+4.2 VISTA DE DATOS 8 
+4.3 VISTA DE IMPLEMENTACIÓN. 9 
+4.3.1 ARQUETIPO DE LA SOLUCIÓN 9 
+4.3.2 HERRAMIENTAS PARA LA INTEGRACIÓN 10 
+4.3.3 AMBIENTE PARA LA INTEGRACIÓN 10 
+4.4 VISTA DE DESPLIEGUE. 10 
+4.4.1 AMBIENTE PARA EL DESPLIEGUE 11 
+ 
+ 
+ 
+Documento de Arquitectura del Software 
+1 Introducción 
+ 
+1.1 Alcance 
+El presente documento tiene como objetivo presentar la propuesta arquitectónica del software 
+EduBoost, una plataforma web destinada a optimizar el aprendizaje de estudiantes que presentan 
+rezago académico mediante asesorías, cursos en línea y herramientas de seguimiento académico. 
+El documento describe las decisiones arquitectónicas relevantes que permiten cubrir los requerimientos 
+funcionales y no funcionales del sistema, incluyendo: 
+● La estructura lógica del sistema. 
+● La organización de sus componentes. 
+● Las tecnologías y herramientas de desarrollo utilizadas. 
+● El modelo de datos y almacenamiento de información. 
+EduBoost permitirá a los estudiantes acceder a asesorías personalizadas, cursos y materiales 
+educativos desde una plataforma web centralizada, facilitando la interacción entre alumnos y asesores. 
+ 
+ 
+2 Resumen Arquitectónico 
+2.1 Tipo de Aplicación y Estilos Arquitectónicos 
+El sistema EduBoost será desarrollado como una aplicación web multiusuario, accesible mediante 
+navegadores web. 
+La arquitectura del sistema seguirá un modelo Cliente – Servidor, donde: 
+● Cliente: Navegador web del usuario. 
+● Servidor: Servidor web que procesa la lógica de negocio y gestiona el acceso a la base de 
+datos. 
+El estilo arquitectónico principal será: 
+Arquitectura en Capas 
+El sistema se organizará en las siguientes capas: 
+1. Capa de Presentación 
+o Interfaz web para estudiantes y asesores 
+o Implementada con HTML, CSS, Bootstrap y JavaScript. 
+2. Capa de Lógica de Negocio 
+o Procesamiento de reglas del sistema 
+o Gestión de usuarios, cursos, asesorías y evaluaciones. 
+ 
+ 
+3. Capa de Acceso a Datos 
+o Comunicación con la base de datos SQL Server 
+o Manejo de consultas y persistencia de información. 
+Patrón de Diseño 
+Se utilizará el patrón MVC (Model – View – Controller) mediante ASP.NET Core MVC. 
+Esto permite: 
+● Separar la lógica de negocio. 
+● Facilitar mantenimiento. 
+● Mejorar escalabilidad. 
+ 
+2.2 Aproximación Técnica 
+La solución será desarrollada utilizando tecnologías del ecosistema Microsoft .NET. 
+ 
+Stack Tecnológico 
+ 
+2.3 Ambiente de Desarrollo 
+El ambiente de desarrollo contará con las siguientes herramientas: 
+Herramienta Versión Uso 
+Visual Studio 2022 Desarrollo del sistema 
+SQL Server 2019 o 
+superior 
+Base de datos 
+SQL Server Management 
+Studio 
+19 Administración de base de 
+datos 
+Git 2.x Control de versiones 
+StarUML 5.x Modelado UML 
+.NET SDK .NET 7 / 
+.NET 8 
+Framework de desarrollo 
+Navegador Chrome / 
+Edge 
+Pruebas de interfaz 
+Capa Tecnología 
+Frontend HTML5, CSS3, Bootstrap, 
+JavaScript 
+Backend C# – ASP.NET Core MVC 
+Base de datos SQL Server 
+ORM Entity Framework Core 
+Servidor web IIS 
+Control de 
+versiones 
+Git 
+IDE Visual Studio 2022 
+ 
+ 
+ 
+2.4 Ambiente de Producción 
+El sistema será desplegado en un servidor con las siguientes características: 
+ 
+Componente Configuración 
+Sistema Operativo Windows Server 2019 o superior 
+Servidor Web IIS 
+Framework .NET Runtime 
+Base de datos SQL Server 
+Memoria RAM 8 GB mínimo 
+Procesador 4 núcleos mínimo 
+El sistema estará disponible mediante navegador web para todos los usuarios registrados. 
+ 
+2.5 Objetivos de la Arquitectura 
+La arquitectura busca garantizar atributos de calidad importantes para el sistema. 
+ 
+Atributo de calidad Rango requerido Motivo Estrategias 
+Escalabilidad Medio Permitir crecimiento de usuarios Arquitectura en capas 
+Flexibilidad Medio Posibilidad de agregar nuevas 
+funcionalidades 
+Uso de MVC 
+Disponibilidad Alto Acceso constante a la plataforma Servidor dedicado 
+Usabilidad Alto Facilidad de uso para estudiantes Interfaz intuitiva con Bootstrap 
+Rendimiento Medio Respuesta rápida del sistema Optimización de consultas SQL 
+Multi-Lenguaje Bajo Futuro soporte de idiomas Estructura preparada para 
+localización 
+Accesibilidad Medio Uso desde diferentes dispositivos Diseño web responsivo 
+Integridad Alto Protección de datos académicos Validaciones y control de acceso 
+Confiabilidad de datos Alto Evitar pérdida de información Respaldos y transacciones 
+ 
+ 
+ 
+ 
+3 Diseño de alto nivel de la arquitectura. 
+El sistema EduBoost se compone de varios componentes principales que interactúan entre sí para 
+brindar las funcionalidades del sistema. 
+ 
+ 
+Diagrama de Componentes 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+Diagrama de Contexto 
+ 
+ 
+ 
+4 Diseño de bajo nivel (detallado) de la arquitectura. 
+ 
+En esta sección se detallan los elementos internos del sistema mediante diagramas estructurales y de 
+comportamiento. 
+ 
+Los diagramas que se utilizarán son: 
+● Diagramas de clases 
+● Diagramas de secuencia 
+● Diagramas de actividad 
+● Diagramas de componentes 
+● Diagrama de base de datos 
+● Diagrama de despliegue
+
+ 
+ 
+ 
+ 
+ 
+4.1 Vista Lógica. 
+El diagrama muestra una arquitectura bien definida donde se separan las responsabilidades de 
+identidad (Usuario) de las operativas (Cursos y Asesorías), permitiendo un control detallado sobre las 
+calificaciones y el progreso académico. 
+ 
+ 
+ 
+ 
+4.2 Vista de Datos 
+Es un Diagrama de Modelo Físico de Base de Datos . Define la estructura técnica de las tablas 
+(usuarios, cursos, inscripciones, etc.), sus tipos de datos (INT, VARCHAR) y las relaciones de llave 
+primaria a foránea para organizar la información en un sistema 
+
+ 
+ 
+ 
+ 
+ 
+4.3 Vista de Implementación. 
+El modelo de implementación de EduBoost se organiza en una arquitectura de tres capas  que 
+descompone el software en los siguientes subsistemas: 
+● Capa de Presentación: Interfaz de usuario web desarrollada para el acceso de estudiantes y 
+asesores. 
+● Capa de Negocio: Lógica del servidor implementada en ASP.NET Core que gestiona cursos, 
+asesorías y evaluaciones. 
+● Capa de Datos: Persistencia de información en SQL Server, comunicada mediante un mapeo 
+de objetos (ORM). 
+● Seguridad: Componente transversal que administra el control de acceso basado en los roles de 
+la base de datos. 
+ 
+ 
+4.3.1 Arquetipo de la solución 
+El arquetipo de EduBoost se basa en un estilo arquitectónico de N-Capas (Multitier). La estructura se 
+divide en una capa de Presentación (Navegador Web/Cliente), una capa de Negocio (Servidor Web con 
+ASP.NET Core) y una capa de Datos (SQL Server). Esta separación permite que la lógica de las 
+asesorías y cursos esté aislada de la interfaz de usuario, facilitando el mantenimiento y la escalabilidad 
+
+ 
+ 
+del sistema mediante componentes desacoplados que se comunican de forma síncrona. 
+4.3.2 Herramientas para la Integración 
+Para la integración de los componentes de software y hardware, se utilizarán las siguientes 
+herramientas: 
+● Software: Visual Studio 2022 (IDE), SQL Server Management Studio (SSMS) para la gestión de 
+datos y Git para el control de versiones. 
+● Hardware: Servidor con arquitectura x64, mínimo 8GB de RAM para el entorno de ejecución de 
+IIS y SQL Server. 
+● Licencias: Licencia de Windows Server para el sistema operativo y licencias de desarrollo para 
+el framework .NET. 
+ 
+ 
+4.3.3 Ambiente para la Integración 
+La integración se efectuará inicialmente en un servidor de desarrollo local para pruebas unitarias, para 
+luego pasar a un ambiente de producción en Windows Server. La configuración técnica incluye: 
+● Servidor Web: IIS (Internet Information Services) configurado para servir la aplicación ASP.NET 
+Core. 
+● Seguridad: Configuración de reglas de firewall para permitir tráfico únicamente por los puertos 
+80 (HTTP) y 443 (HTTPS), además de la creación de una estructura de directorios que separe 
+los archivos binarios (/bin) de las carpetas de contenido estático (/wwwroot) y los archivos de 
+registro (/logs). 
+● Línea base: Se tomará como referencia la rama main del repositorio de código, asegurando que 
+todos los componentes (Base de datos, Backend y Frontend) estén sincronizados antes de la 
+puesta en marcha. 
+ 
+ 
+4.4 Vista de Despliegue. 
+Un Diagrama de Despliegue UML  que muestra la arquitectura física de una aplicación  web de tres 
+capas. Describe cómo el Cliente interactúa desde un navegador con un Servidor Web  que utiliza 
+Windows Server, IIS y ASP.NET Core, el cual a su vez se conecta con un Servidor de Base de Datos 
+que corre SQL Server para la gestión de los datos. 
+ 
+ 
+ 
+ 
+4.4.1 Ambiente para el Despliegue 
+El despliegue se realizará en un ambiente de producción bajo una arquitectura de tres capas. El 
+servidor web operará sobre Windows Server utilizando Internet Information Services (IIS) como 
+servidor de aplicaciones para el backend en ASP.NET Core. La base de datos se alojará en un servidor 
+independiente con SQL Server, asegurando la integridad de los datos mediante una estructura de 
+directorios que separe los binarios de la aplicación de los registros (logs) y archivos temporales. 
