@@ -1,0 +1,60 @@
+@model EduBoost.Models.Curso
+
+@{
+    ViewData["Title"] = (ViewContext.RouteData.Values["action"]?.ToString() == "Create" ? "Crear Nuevo Curso" : "Editar Curso");
+}
+
+<div class="container py-5 animate-fade-in-up">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="glass-card p-5 border-0 shadow-lg">
+                <div class="d-flex align-items-center mb-4">
+                    <a asp-action="Index" class="btn btn-glass rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                    </a>
+                    <h2 class="fw-bold text-gradient mb-0">@ViewData["Title"]</h2>
+                </div>
+
+                <form asp-action="@(ViewContext.RouteData.Values["action"])" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger glass-card border-0 mb-4" role="alert"></div>
+                    
+                    @if (ViewContext.RouteData.Values["action"]?.ToString() == "Edit")
+                    {
+                        <input type="hidden" asp-for="IdCurso" />
+                        <input type="hidden" asp-for="FechaCreacion" />
+                    }
+
+                    <div class="form-floating mb-4">
+                        <input asp-for="Nombre" class="form-control" placeholder="Nombre del curso" required />
+                        <label asp-for="Nombre">Nombre del Curso</label>
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <textarea asp-for="Descripcion" class="form-control" placeholder="Descripción" style="height: 120px" required></textarea>
+                        <label asp-for="Descripcion">Descripción</label>
+                        <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input asp-for="Profesor" class="form-control" placeholder="Nombre del profesor" required />
+                        <label asp-for="Profesor">Profesor Asignado</label>
+                        <span asp-validation-for="Profesor" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary rounded-pill py-3 fw-bold shadow-sm">
+                            @(ViewContext.RouteData.Values["action"]?.ToString() == "Create" ? "Guardar Curso" : "Actualizar Cambios")
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

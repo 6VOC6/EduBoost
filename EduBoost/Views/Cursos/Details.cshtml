@@ -1,0 +1,95 @@
+@model EduBoost.Models.Curso
+
+@{
+    ViewData["Title"] = Model.Nombre;
+}
+
+<div class="container py-5 animate-fade-in-up">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none text-primary fw-medium">Cursos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Nombre</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <div class="glass-card p-5 mb-5 border-0">
+                <div class="course-icon-wrapper mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-mortarboard-fill" viewBox="0 0 16 16">
+                        <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.135 3.547a.5.5 0 0 0 0 .896L3.14 7.844v2.523c0 2.12 1.959 3.515 4.86 3.515s4.86-1.395 4.86-3.515V7.844l2.466-1.354a.5.5 0 0 0 0-.896L8.211 2.047z"/>
+                        <path d="M4.146 8.265 8 10.382l3.854-2.117L8 6.147 4.146 8.265z"/>
+                    </svg>
+                </div>
+                <h1 class="display-5 fw-bold text-gradient mb-3">@Model.Nombre</h1>
+                <p class="fs-5 text-muted mb-4">@Model.Descripcion</p>
+                
+                <hr class="my-5 opacity-25">
+                
+                <h3 class="fw-bold mb-4">¿Qué aprenderás?</h3>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Fundamentos Sólidos</h6>
+                                <p class="small text-muted mb-0">Domina los conceptos base de la materia.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Contenido Multimedia</h6>
+                                <p class="small text-muted mb-0">Videos y material interactivo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="glass-card p-4 border-0 mb-4 sticky-top" style="top: 100px;">
+                <div class="d-flex align-items-center mb-4">
+                    <img src="https://ui-avatars.com/api/?name=@(Model.Profesor.Replace(" ", "+"))&background=4F46E5&color=fff&size=128" 
+                         class="rounded-circle me-3" width="56" alt="Instructor">
+                    <div>
+                        <h6 class="fw-bold mb-0">@Model.Profesor</h6>
+                        <small class="text-muted">Instructor del curso</small>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Fecha de creación:</span>
+                        <span class="fw-medium">@Model.FechaCreacion.ToString("dd MMM yyyy")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Nivel:</span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3">Intermedio</span>
+                    </div>
+                </div>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold mb-3">Inscribirme ahora</button>
+                    <p class="text-center small text-muted mb-0">¡Únete a más de 500 estudiantes!</p>
+                }
+                else
+                {
+                    <a asp-controller="Usuarios" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-primary w-100 rounded-pill py-3 fw-bold mb-3">Inicia sesión para inscribirte</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
