@@ -3,6 +3,7 @@ using EduBoost.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace EduBoost.Controllers
 {
@@ -38,6 +39,14 @@ namespace EduBoost.Controllers
             if (curso == null)
             {
                 return NotFound();
+            }
+
+            // Verificar si el usuario ya esta inscrito
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+                ViewBag.EstaInscrito = await _context.Inscripciones
+                    .AnyAsync(i => i.IdUsuario == userId && i.IdCurso == id);
             }
 
             return View(curso);
@@ -150,6 +159,71 @@ namespace EduBoost.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Cursos/Inscribirse/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Inscribirse(int id)
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdStr == null) return Challenge();
+
+            var userId = int.Parse(userIdStr);
+            
+            // Verificar si ya esta inscrito
+            var yaInscrito = await _context.Inscripciones
+                .AnyAsync(i => i.IdUsuario == userId && i.IdCurso == id);
+
+            if (yaInscrito)
+            {
+                TempData["ErrorMessage"] = "Ya estas inscrito en este curso.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            // Crear inscripcion
+            var inscripcion = new Inscripcion
+            {
+                IdUsuario = userId,
+                IdCurso = id,
+                FechaInscripcion = DateTime.UtcNow
+            };
+
+            // Crear registro de progreso inicial
+            var progreso = new Progreso
+            {
+                IdUsuario = userId,
+                IdCurso = id,
+                Porcentaje = 0,
+                UltimaActualizacion = DateTime.UtcNow
+            };
+
+            _context.Inscripciones.Add(inscripcion);
+            _context.Progresos.Add(progreso);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "¡Te has inscrito correctamente!";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        // GET: Cursos/MisCursos
+        public async Task<IActionResult> MisCursos()
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdStr == null) return Challenge();
+            var userId = int.Parse(userIdStr);
+
+            var misCursos = await _context.Inscripciones
+                .Include(i => i.Curso)
+                .Where(i => i.IdUsuario == userId)
+                .Select(i => new MisCursosViewModel
+                {
+                    Curso = i.Curso,
+                    Progreso = _context.Progresos.FirstOrDefault(p => p.IdUsuario == userId && p.IdCurso == i.IdCurso)
+                })
+                .ToListAsync();
+
+            return View(misCursos);
         }
 
         private bool CursoExists(int id)

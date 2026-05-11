@@ -1,0 +1,74 @@
+@model IEnumerable<EduBoost.Models.MisCursosViewModel>
+
+@{
+    ViewData["Title"] = "Mis Cursos";
+}
+
+<div class="container py-5 animate-fade-in-up">
+    <div class="mb-5">
+        <h1 class="display-4 fw-bold text-gradient">Mi Aprendizaje</h1>
+        <p class="text-muted fs-5">Continúa donde lo dejaste y alcanza tus metas académicas.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="glass-card p-5 text-center border-0 shadow-lg">
+            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-4 d-inline-flex mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+            </div>
+            <h2 class="fw-bold mb-3">Aún no te has inscrito en ningún curso</h2>
+            <p class="text-muted mb-4 fs-5">Explora nuestro catálogo y comienza a aprender hoy mismo.</p>
+            <a asp-action="Index" class="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-sm">Explorar Catálogo</a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card glass-card h-100 border-0 p-4">
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="course-icon-wrapper me-4 mb-0 flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-mortarboard" viewBox="0 0 16 16">
+                                    <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.135 3.547a.5.5 0 0 0 0 .896L3.14 7.844v2.523c0 2.12 1.959 3.515 4.86 3.515s4.86-1.395 4.86-3.515V7.844l2.466-1.354a.5.5 0 0 0 0-.896L8.211 2.047zM3.14 6.059 8 3.705l4.86 2.354L8 8.414 3.14 6.059zm10.72 1.346-2.466 1.354v2.523c0 1.41-1.34 2.515-3.86 2.515s-3.86-1.105-3.86-2.515V7.405L1.279 6.147 8 9.503l6.721-3.358z"/>
+                                </svg>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h3 class="h4 fw-bold mb-1">@item.Curso?.Nombre</h3>
+                                <p class="text-muted small mb-0">Instructor: @item.Curso?.Profesor</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-bold text-muted small">Progreso Académico</span>
+                                <span class="fw-bold text-primary small">@(item.Progreso?.Porcentaje ?? 0)%</span>
+                            </div>
+                            <div class="progress rounded-pill shadow-sm" style="height: 10px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+                                     role="progressbar" 
+                                     style="width: @(item.Progreso?.Porcentaje ?? 0)%" 
+                                     aria-valuenow="@(item.Progreso?.Porcentaje ?? 0)" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-clock me-1" viewBox="0 0 16 16">
+                                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                </svg>
+                                Última vez: @(item.Progreso?.UltimaActualizacion?.ToString("dd/MM/yyyy") ?? "Nunca")
+                            </span>
+                            <a asp-action="Details" asp-route-id="@item.Curso?.IdCurso" class="btn btn-primary rounded-pill px-4 btn-sm fw-bold shadow-sm">Continuar Curso</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

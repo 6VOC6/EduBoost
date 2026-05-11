@@ -1,4 +1,4 @@
-﻿namespace EduBoost.Data
+namespace EduBoost.Data
 {
     using EduBoost.Models;
     using Microsoft.EntityFrameworkCore;
@@ -15,6 +15,8 @@
         public DbSet<Curso> Cursos { get; set; }
 
         public DbSet<MaterialCurso> MaterialCurso { get; set; }
+        public DbSet<Inscripcion> Inscripciones { get; set; }
+        public DbSet<Progreso> Progresos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -53,6 +55,36 @@
                     .WithMany()
                     .HasForeignKey(m => m.IdCurso)
                     .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Inscripcion>(entity =>
+            {
+                entity.ToTable("Inscripciones");
+                entity.HasKey(i => i.IdInscripcion);
+                entity.Property(i => i.FechaInscripcion).HasDefaultValueSql("GETDATE()");
+                entity.HasOne(i => i.Usuario)
+                    .WithMany()
+                    .HasForeignKey(i => i.IdUsuario)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(i => i.Curso)
+                    .WithMany()
+                    .HasForeignKey(i => i.IdCurso)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Progreso>(entity =>
+            {
+                entity.ToTable("Progreso");
+                entity.HasKey(p => p.IdProgreso);
+                entity.Property(p => p.Porcentaje).HasDefaultValue(0);
+                entity.HasOne(p => p.Usuario)
+                    .WithMany()
+                    .HasForeignKey(p => p.IdUsuario)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Curso)
+                    .WithMany()
+                    .HasForeignKey(p => p.IdCurso)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }
