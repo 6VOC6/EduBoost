@@ -1,0 +1,129 @@
+@model EduBoost.Models.Curso
+@using EduBoost.Models
+@{
+    ViewData["Title"] = "Aprendiendo: " + Model.Nombre;
+    var materiales = ViewData["Materiales"] as List<MaterialCurso> ?? new List<MaterialCurso>();
+    var progreso = ViewBag.Progreso as Progreso;
+}
+
+<div class="container-fluid px-4 py-4 animate-fade-in-up">
+    <div class="row g-4">
+        <!-- Sidebar de Materiales -->
+        <div class="col-lg-3">
+            <div class="glass-card p-4 border-0 h-100 shadow-sm overflow-auto" style="max-height: 85vh;">
+                <h4 class="fw-bold mb-4 text-gradient">Contenido del Curso</h4>
+                
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small fw-bold text-muted">Tu Progreso</span>
+                        <span class="small fw-bold text-primary">@(progreso?.Porcentaje ?? 0)%</span>
+                    </div>
+                    <div class="progress rounded-pill" style="height: 6px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: @(progreso?.Porcentaje ?? 0)%"></div>
+                    </div>
+                </div>
+
+                <div class="list-group list-group-flush rounded-3 overflow-hidden">
+                    @foreach (var m in materiales)
+                    {
+                        <a href="?materialId=@m.IdMaterial" class="list-group-item list-group-item-action border-0 py-3 mb-2 rounded-3 @(Context.Request.Query["materialId"] == m.IdMaterial.ToString() ? "active bg-primary bg-opacity-10 text-primary fw-bold" : "bg-light bg-opacity-50")">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    @if (m.TipoMaterial == "Video")
+                                    {
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                            <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+                                            <path d="M8.5 1a.5.5 0 0 0-.5.5v11a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5V14a.5.5 0 0 0-.5-.5h-.5V1a.5.5 0 0 0-.5-.5H8.5z"/>
+                                        </svg>
+                                    }
+                                </div>
+                                <div>
+                                    <span class="d-block text-truncate" style="max-width: 180px;">@m.Titulo</span>
+                                    <small class="opacity-75 fw-normal">@m.TipoMaterial</small>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Visor de Contenido -->
+        <div class="col-lg-9">
+            @{
+                var selectedId = Context.Request.Query["materialId"].ToString();
+                var currentMaterial = materiales.FirstOrDefault(m => m.IdMaterial.ToString() == selectedId) ?? materiales.FirstOrDefault();
+            }
+
+            @if (currentMaterial != null)
+            {
+                <div class="glass-card p-4 border-0 shadow-lg">
+                    <div class="mb-4">
+                        <h2 class="fw-bold text-gradient">@currentMaterial.Titulo</h2>
+                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3">@currentMaterial.TipoMaterial</span>
+                    </div>
+
+                    @if (currentMaterial.TipoMaterial == "Video" && !string.IsNullOrEmpty(currentMaterial.UrlVideo))
+                    {
+                        var embedUrl = currentMaterial.UrlVideo;
+                        if (embedUrl.Contains("watch?v=")) 
+                        {
+                            embedUrl = embedUrl.Replace("watch?v=", "embed/");
+                        }
+                        else if (embedUrl.Contains("youtu.be/"))
+                        {
+                            embedUrl = embedUrl.Replace("youtu.be/", "www.youtube.com/embed/");
+                        }
+
+                        <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-lg mb-4">
+                            <iframe src="@embedUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-5 text-center bg-light rounded-4 border border-dashed mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-file-earmark-pdf text-muted mb-3" viewBox="0 0 16 16">
+                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                                <path d="M4.603 12.087a.81.81 0 0 1-.438-.42c-.195-.406-.139-.902.132-1.319.545-.844 1.332-1.146 2.174-1.146 1.157 0 1.954.512 2.651 1.25.75-.812 1.487-1.428 2.247-1.428 1.157 0 1.954.512 2.651 1.25.75-.812 1.487-1.428 2.247-1.428.15 0 .285.012.392.036.31.069.49.255.49.52 0 .227-.123.407-.333.53a.98.98 0 0 1-.416.115c-.417 0-.75-.246-1.146-.66-.453.478-.992.83-1.574.83-1.157 0-1.954-.512-2.651-1.25-.75.812-1.487 1.428-2.247 1.428-1.157 0-1.954-.512-2.651-1.25z"/>
+                            </svg>
+                            <h4 class="text-muted">Documento no disponible para previsualización</h4>
+                            <p class="text-muted small">Este material es de tipo @currentMaterial.TipoMaterial.</p>
+                        </div>
+                    }
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted small">
+                            Instructor: @Model.Profesor
+                        </div>
+                        <form asp-action="CompletarMaterial" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="idCurso" value="@Model.IdCurso" />
+                            <input type="hidden" name="idMaterial" value="@currentMaterial.IdMaterial" />
+                            <button type="submit" class="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-sm">
+                                Marcar como Completado
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="glass-card p-5 text-center border-0 shadow-lg">
+                    <h3 class="text-muted">Este curso aún no tiene materiales cargados.</h3>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .list-group-item.active {
+        border-left: 4px solid var(--primary-color) !important;
+    }
+</style>

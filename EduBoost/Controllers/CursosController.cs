@@ -226,6 +226,93 @@ namespace EduBoost.Controllers
             return View(misCursos);
         }
 
+        // GET: Cursos/VerContenido/5
+        public async Task<IActionResult> VerContenido(int id)
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdStr == null) return Challenge();
+            var userId = int.Parse(userIdStr);
+
+            // Verificar inscripcion
+            var inscripcion = await _context.Inscripciones
+                .FirstOrDefaultAsync(i => i.IdUsuario == userId && i.IdCurso == id);
+
+            if (inscripcion == null)
+            {
+                TempData["ErrorMessage"] = "Debes inscribirte en el curso para ver el contenido.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            var curso = await _context.Cursos
+                .FirstOrDefaultAsync(c => c.IdCurso == id);
+
+            if (curso == null) return NotFound();
+
+            var materiales = await _context.MaterialCurso
+                .Where(m => m.IdCurso == id)
+                .ToListAsync();
+
+            ViewBag.Progreso = await _context.Progresos
+                .FirstOrDefaultAsync(p => p.IdUsuario == userId && p.IdCurso == id);
+
+            ViewData["Materiales"] = materiales;
+            return View(curso);
+        }
+
+        // POST: Cursos/CompletarMaterial
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CompletarMaterial(int idCurso, int idMaterial)
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdStr == null) return Challenge();
+            var userId = int.Parse(userIdStr);
+
+            // 1. Verificar si ya se marco como completado
+            var yaCompletado = await _context.MaterialesCompletados
+                .AnyAsync(mc => mc.IdUsuario == userId && mc.IdMaterial == idMaterial);
+
+            if (!yaCompletado)
+            {
+                var nuevoCompletado = new MaterialCompletado
+                {
+                    IdUsuario = userId,
+                    IdMaterial = idMaterial
+                };
+                _context.MaterialesCompletados.Add(nuevoCompletado);
+                await _context.SaveChangesAsync();
+            }
+
+            // 2. Recalcular progreso
+            var totalMateriales = await _context.MaterialCurso.CountAsync(m => m.IdCurso == idCurso);
+            if (totalMateriales > 0)
+            {
+                var materialesIds = await _context.MaterialCurso
+                    .Where(m => m.IdCurso == idCurso)
+                    .Select(m => m.IdMaterial)
+                    .ToListAsync();
+
+                var completadosCount = await _context.MaterialesCompletados
+                    .CountAsync(mc => mc.IdUsuario == userId && materialesIds.Contains(mc.IdMaterial));
+
+                var nuevoPorcentaje = (int)((double)completadosCount / totalMateriales * 100);
+
+                var progreso = await _context.Progresos
+                    .FirstOrDefaultAsync(p => p.IdUsuario == userId && p.IdCurso == idCurso);
+
+                if (progreso != null)
+                {
+                    progreso.Porcentaje = nuevoPorcentaje;
+                    progreso.UltimaActualizacion = DateTime.UtcNow;
+                    _context.Update(progreso);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            TempData["SuccessMessage"] = "¡Progreso actualizado!";
+            return RedirectToAction(nameof(VerContenido), new { id = idCurso, materialId = idMaterial });
+        }
+
         private bool CursoExists(int id)
         {
             return _context.Cursos.Any(e => e.IdCurso == id);

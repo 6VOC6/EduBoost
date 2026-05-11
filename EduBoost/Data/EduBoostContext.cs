@@ -17,6 +17,7 @@ namespace EduBoost.Data
         public DbSet<MaterialCurso> MaterialCurso { get; set; }
         public DbSet<Inscripcion> Inscripciones { get; set; }
         public DbSet<Progreso> Progresos { get; set; }
+        public DbSet<MaterialCompletado> MaterialesCompletados { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
