@@ -1,0 +1,49 @@
+@model EduBoost.Models.Asesoria
+@{
+    ViewData["Title"] = "Gestionar Asesoría";
+}
+
+<div class="auth-shell">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="auth-card glass-card animate-fade-in-up">
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold text-gradient">Gestionar Asesoría</h2>
+                            <p class="text-muted">Acepta la solicitud y proporciona un enlace de reunión.</p>
+                        </div>
+
+                        <div class="bg-light p-3 rounded-4 mb-4">
+                            <p class="mb-1 text-muted small">Estudiante:</p>
+                            <p class="fw-bold mb-3">@Model.Estudiante?.Nombre</p>
+                            
+                            <p class="mb-1 text-muted small">Curso:</p>
+                            <p class="fw-bold mb-3">@Model.Curso?.Nombre</p>
+
+                            <p class="mb-1 text-muted small">Tema:</p>
+                            <p class="fw-bold mb-3">@Model.Tema</p>
+
+                            <p class="mb-1 text-muted small">Fecha Sugerida:</p>
+                            <p class="fw-bold mb-0">@Model.FechaHora.ToString("f")</p>
+                        </div>
+
+                        <form asp-action="Aceptar" method="post">
+                            <input type="hidden" name="id" value="@Model.IdAsesoria" />
+                            
+                            <div class="form-floating mb-4">
+                                <input name="enlace" type="url" class="form-control" id="enlaceInput" placeholder="Enlace de la reunión (Zoom, Teams, etc.)" required>
+                                <label for="enlaceInput">Enlace de la reunión</label>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-5">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold">Aceptar y Enviar Enlace</button>
+                                <a asp-action="Index" class="btn btn-link text-muted text-decoration-none">Volver al listado</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

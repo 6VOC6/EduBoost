@@ -1,0 +1,67 @@
+@model EduBoost.Models.Asesoria
+@{
+    ViewData["Title"] = "Solicitar Asesoría";
+    var cursos = ViewBag.Cursos as List<EduBoost.Models.Curso>;
+}
+
+<div class="auth-shell">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="auth-card glass-card animate-fade-in-up">
+                    <div class="card-body">
+                        <div class="text-center mb-5">
+                            <div class="course-icon-wrapper mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-chat-heart-fill" viewBox="0 0 16 16">
+                                  <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15Zm0-9.007c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132Z"/>
+                                </svg>
+                            </div>
+                            <h2 class="fw-bold text-gradient">Solicitar Asesoría</h2>
+                            <p class="text-muted">Completa los datos para agendar tu sesión de apoyo.</p>
+                        </div>
+
+                        <form asp-action="Solicitar" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <div class="form-floating mb-4">
+                                <select asp-for="IdCurso" class="form-select" id="cursoSelect">
+                                    <option value="">Selecciona un curso...</option>
+                                    @if (cursos != null)
+                                    {
+                                        foreach (var curso in cursos)
+                                        {
+                                            <option value="@curso.IdCurso">@curso.Nombre</option>
+                                        }
+                                    }
+                                </select>
+                                <label asp-for="IdCurso">Curso</label>
+                                <span asp-validation-for="IdCurso" class="text-danger small"></span>
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                <input asp-for="FechaHora" type="datetime-local" class="form-control" id="fechaInput" placeholder="Fecha y Hora">
+                                <label asp-for="FechaHora">Fecha y Hora sugerida</label>
+                                <span asp-validation-for="FechaHora" class="text-danger small"></span>
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                <textarea asp-for="Tema" class="form-control" id="temaInput" placeholder="¿Qué tema quieres tratar?" style="height: 100px"></textarea>
+                                <label asp-for="Tema">Tema o duda específica</label>
+                                <span asp-validation-for="Tema" class="text-danger small"></span>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-5">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold">Enviar Solicitud</button>
+                                <a asp-action="Index" class="btn btn-link text-muted text-decoration-none">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
