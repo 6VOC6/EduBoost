@@ -1,74 +1,177 @@
 @model IEnumerable<EduBoost.Models.MisCursosViewModel>
-
 @{
     ViewData["Title"] = "Mis Cursos";
+    var cursosAdministrados = ViewBag.CursosAdministrados as List<EduBoost.Models.Curso> ?? new List<EduBoost.Models.Curso>();
+    bool esAsesor = User.IsInRole("Asesor") || User.IsInRole("Administrador");
 }
 
 <div class="container py-5 animate-fade-in-up">
-    <div class="mb-5">
-        <h1 class="display-4 fw-bold text-gradient">Mi Aprendizaje</h1>
-        <p class="text-muted fs-5">Continúa donde lo dejaste y alcanza tus metas académicas.</p>
+    <div class="mb-5 text-center">
+        <h1 class="display-4 fw-bold text-gradient">Mi Panel de Cursos</h1>
+        <p class="text-muted fs-5">Gestiona tu aprendizaje y tus contenidos desde un solo lugar.</p>
     </div>
 
-    @if (!Model.Any())
+    @if (esAsesor)
     {
-        <div class="glass-card p-5 text-center border-0 shadow-lg">
-            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-4 d-inline-flex mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                </svg>
-            </div>
-            <h2 class="fw-bold mb-3">Aún no te has inscrito en ningún curso</h2>
-            <p class="text-muted mb-4 fs-5">Explora nuestro catálogo y comienza a aprender hoy mismo.</p>
-            <a asp-action="Index" class="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-sm">Explorar Catálogo</a>
-        </div>
+        <!-- Pestañas para Asesores -->
+        <ul class="nav nav-pills justify-content-center mb-5 glass-card p-2 rounded-pill d-inline-flex mx-auto" id="courseTabs" role="tablist" style="border: none;">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-pill px-4 fw-bold" id="learning-tab" data-bs-toggle="pill" data-bs-target="#learning" type="button" role="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-book me-2" viewBox="0 0 16 16">
+                      <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                    </svg>
+                    Aprendiendo
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill px-4 fw-bold" id="managing-tab" data-bs-toggle="pill" data-bs-target="#managing" type="button" role="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-workspace me-2" viewBox="0 0 16 16">
+                      <path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H4Zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                      <path d="M2 1a2 2 0 0 0-2 2v9.5A1.5 1.5 0 0 0 1.5 14h.647a1 1 0 0 1-.588-.447l-2-3A1 1 0 0 1 0 10V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v7a1 1 0 0 1-.559.894l-2 3a1 1 0 0 1-.588.447H14.5a1.5 1.5 0 0 0 1.5-1.5V3a2 2 0 0 0-2-2H2Z"/>
+                    </svg>
+                    Gestionando
+                </button>
+            </li>
+        </ul>
     }
-    else
-    {
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-            @foreach (var item in Model)
+
+    <div class="tab-content mt-4" id="courseTabsContent">
+        <!-- Tab: Aprendiendo -->
+        <div class="tab-pane fade show active" id="learning" role="tabpanel">
+            @if (!Model.Any())
             {
-                <div class="col">
-                    <div class="card glass-card h-100 border-0 p-4">
-                        <div class="d-flex align-items-start mb-4">
-                            <div class="course-icon-wrapper me-4 mb-0 flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-mortarboard" viewBox="0 0 16 16">
-                                    <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.135 3.547a.5.5 0 0 0 0 .896L3.14 7.844v2.523c0 2.12 1.959 3.515 4.86 3.515s4.86-1.395 4.86-3.515V7.844l2.466-1.354a.5.5 0 0 0 0-.896L8.211 2.047zM3.14 6.059 8 3.705l4.86 2.354L8 8.414 3.14 6.059zm10.72 1.346-2.466 1.354v2.523c0 1.41-1.34 2.515-3.86 2.515s-3.86-1.105-3.86-2.515V7.405L1.279 6.147 8 9.503l6.721-3.358z"/>
-                                </svg>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h3 class="h4 fw-bold mb-1">@item.Curso?.Nombre</h3>
-                                <p class="text-muted small mb-0">Instructor: @item.Curso?.Profesor</p>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="fw-bold text-muted small">Progreso Académico</span>
-                                <span class="fw-bold text-primary small">@(item.Progreso?.Porcentaje ?? 0)%</span>
-                            </div>
-                            <div class="progress rounded-pill shadow-sm" style="height: 10px;">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
-                                     role="progressbar" 
-                                     style="width: @(item.Progreso?.Porcentaje ?? 0)%" 
-                                     aria-valuenow="@(item.Progreso?.Porcentaje ?? 0)" 
-                                     aria-valuemin="0" 
-                                     aria-valuemax="100"></div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted small">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-clock me-1" viewBox="0 0 16 16">
-                                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-                                </svg>
-                                Última vez: @(item.Progreso?.UltimaActualizacion?.ToString("dd/MM/yyyy") ?? "Nunca")
-                            </span>
-                            <a asp-action="Details" asp-route-id="@item.Curso?.IdCurso" class="btn btn-primary rounded-pill px-4 btn-sm fw-bold shadow-sm">Continuar Curso</a>
-                        </div>
+                <div class="glass-card p-5 text-center border-0 shadow-lg animate-fade-in-up">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-4 d-inline-flex mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
                     </div>
+                    <h2 class="fw-bold mb-3">Aún no te has inscrito en ningún curso</h2>
+                    <p class="text-muted mb-4 fs-5">Explora nuestro catálogo y comienza a aprender hoy mismo.</p>
+                    <a asp-action="Index" class="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-sm">Explorar Catálogo</a>
+                </div>
+            }
+            else
+            {
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col">
+                            <div class="card glass-card h-100 border-0 p-4 hover-lift">
+                                <div class="d-flex align-items-start mb-4">
+                                    <div class="course-icon-wrapper me-4 mb-0 flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-mortarboard" viewBox="0 0 16 16">
+                                            <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.135 3.547a.5.5 0 0 0 0 .896L3.14 7.844v2.523c0 2.12 1.959 3.515 4.86 3.515s4.86-1.395 4.86-3.515V7.844l2.466-1.354a.5.5 0 0 0 0-.896L8.211 2.047zM3.14 6.059 8 3.705l4.86 2.354L8 8.414 3.14 6.059zm10.72 1.346-2.466 1.354v2.523c0 1.41-1.34 2.515-3.86 2.515s-3.86-1.105-3.86-2.515V7.405L1.279 6.147 8 9.503l6.721-3.358z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h3 class="h4 fw-bold mb-1">@item.Curso?.Nombre</h3>
+                                        <p class="text-muted small mb-0">Instructor: @item.Curso?.Profesor</p>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="fw-bold text-muted small">Progreso Académico</span>
+                                        <span class="fw-bold text-primary small">@(item.Progreso?.Porcentaje ?? 0)%</span>
+                                    </div>
+                                    <div class="progress rounded-pill shadow-sm" style="height: 10px;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+                                             role="progressbar" 
+                                             style="width: @(item.Progreso?.Porcentaje ?? 0)%" 
+                                             aria-valuenow="@(item.Progreso?.Porcentaje ?? 0)" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted small">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-clock me-1" viewBox="0 0 16 16">
+                                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                        </svg>
+                                        Última vez: @(item.Progreso?.UltimaActualizacion?.ToString("dd/MM/yyyy") ?? "Nunca")
+                                    </span>
+                                    <a asp-action="VerContenido" asp-route-id="@item.Curso?.IdCurso" class="btn btn-primary rounded-pill px-4 btn-sm fw-bold shadow-sm">Continuar</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
         </div>
-    }
+
+        <!-- Tab: Gestionando -->
+        <div class="tab-pane fade" id="managing" role="tabpanel">
+            @if (!cursosAdministrados.Any())
+            {
+                <div class="glass-card p-5 text-center border-0 shadow-lg animate-fade-in-up">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-4 d-inline-flex mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                    </div>
+                    <h2 class="fw-bold mb-3">Aún no has creado ningún curso</h2>
+                    <p class="text-muted mb-4 fs-5">Crea tu primer curso y comienza a compartir tu conocimiento.</p>
+                    <a asp-action="Create" class="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-sm">Crear Nuevo Curso</a>
+                </div>
+            }
+            else
+            {
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    @foreach (var curso in cursosAdministrados)
+                    {
+                        <div class="col">
+                            <div class="card glass-card h-100 border-0 p-4 hover-lift border-start border-4 border-primary">
+                                <div class="d-flex align-items-start mb-4">
+                                    <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-4 me-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h3 class="h4 fw-bold mb-1">@curso.Nombre</h3>
+                                        <p class="text-muted small mb-0">Creado el: @curso.FechaCreacion.ToString("dd/MM/yyyy")</p>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted small mb-4 line-clamp-2">@curso.Descripcion</p>
+
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <div class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3">Activo</div>
+                                    <a asp-action="Details" asp-route-id="@curso.IdCurso" class="btn btn-primary rounded-pill px-4 btn-sm fw-bold shadow-sm">Gestionar Contenido</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
 </div>
+
+<style>
+    .nav-pills .nav-link {
+        color: #6c757d;
+        transition: all 0.3s ease;
+    }
+    .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    }
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    }
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;  
+        overflow: hidden;
+    }
+</style>

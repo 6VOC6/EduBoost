@@ -73,7 +73,7 @@ namespace EduBoost.Controllers
                 var userName = User.Identity?.Name;
 
                 curso.IdUsuarioAsesor = userId;
-                curso.Profesor = userName; // Se asigna automáticamente el nombre del usuario actual
+                curso.Profesor = userName; 
                 curso.FechaCreacion = DateTime.UtcNow;
                 
                 _context.Add(curso);
@@ -94,7 +94,6 @@ namespace EduBoost.Controllers
             var curso = await _context.Cursos.FindAsync(id);
             if (curso == null) return NotFound();
 
-            // Verificar propiedad
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             if (curso.IdUsuarioAsesor != userId && !User.IsInRole("Administrador"))
             {
@@ -234,12 +233,14 @@ namespace EduBoost.Controllers
             return RedirectToAction(nameof(Details), new { id = idCurso });
         }
 
+        // GET: Cursos/MisCursos
         public async Task<IActionResult> MisCursos()
         {
             var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userIdStr == null) return Challenge();
             var userId = int.Parse(userIdStr);
 
+            // Cursos en los que estoy inscrito (como alumno)
             var misCursos = await _context.Inscripciones
                 .Include(i => i.Curso)
                 .Where(i => i.IdUsuario == userId)
@@ -248,6 +249,11 @@ namespace EduBoost.Controllers
                     Curso = i.Curso,
                     Progreso = _context.Progresos.FirstOrDefault(p => p.IdUsuario == userId && p.IdCurso == i.IdCurso)
                 })
+                .ToListAsync();
+
+            // Cursos que yo administro (como asesor)
+            ViewBag.CursosAdministrados = await _context.Cursos
+                .Where(c => c.IdUsuarioAsesor == userId)
                 .ToListAsync();
 
             return View(misCursos);
@@ -264,7 +270,6 @@ namespace EduBoost.Controllers
 
             if (curso == null) return NotFound();
 
-            // Los asesores pueden ver el contenido de su propio curso sin inscribirse
             if (inscripcion == null && curso.IdUsuarioAsesor != userId)
             {
                 TempData["ErrorMessage"] = "Debes inscribirte en el curso para ver el contenido.";
