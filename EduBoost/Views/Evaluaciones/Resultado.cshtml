@@ -1,0 +1,37 @@
+@model EduBoost.Models.ResultadoEvaluacion
+@{
+    ViewData["Title"] = "Resultado de Evaluación";
+    var color = Model.Calificacion >= 7 ? "success" : (Model.Calificacion >= 5 ? "warning" : "danger");
+}
+
+<div class="container py-5 animate-fade-in-up">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="glass-card p-5 border-0 shadow-lg text-center">
+                <div class="course-icon-wrapper mx-auto mb-4 bg-@color bg-opacity-10 text-@color">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-award-fill" viewBox="0 0 16 16">
+                      <path d="m8 0 1.669.856 1.83.155 1.151 1.44 1.84.444.05 1.85 1.322 1.29L15.3 7.5l-.544 1.776.43 1.815-1.121 1.464-.66 1.734-1.743.633-.94 1.604L8 16l-1.734-.863-.94-1.604-1.743-.633-.66-1.734-1.121-1.464.43-1.815-.544-1.776 1.322-1.29.05-1.85 1.84-.444 1.151-1.44 1.83-.155L8 0z"/>
+                      <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z"/>
+                    </svg>
+                </div>
+
+                <h1 class="fw-bold mb-2">¡Evaluación Completada!</h1>
+                <p class="text-muted mb-5">Has finalizado el examen para el curso: <br><strong>@Model.Evaluacion?.Curso?.Nombre</strong></p>
+
+                <div class="display-1 fw-bold text-@color mb-2">@Model.Calificacion.ToString("0.0")</div>
+                <div class="h5 fw-bold text-muted mb-5">Calificación Final</div>
+
+                <div class="alert alert-@color glass-card border-0 mb-5">
+                    @if(Model.Calificacion >= 9) { <span>¡Excelente trabajo! Has demostrado un dominio total.</span> }
+                    else if(Model.Calificacion >= 7) { <span>¡Felicidades! Has aprobado con éxito.</span> }
+                    else if(Model.Calificacion >= 6) { <span>Has aprobado, pero te recomendamos repasar los temas.</span> }
+                    else { <span>No has alcanzado el puntaje mínimo. ¡No te rindas e inténtalo de nuevo!</span> }
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a asp-controller="Cursos" asp-action="Details" asp-route-id="@Model.Evaluacion?.IdCurso" class="btn btn-primary rounded-pill py-3 fw-bold shadow-sm">Volver al Curso</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

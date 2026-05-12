@@ -33,7 +33,7 @@ CREATE TABLE Cursos(
     IdUsuarioAsesor INT NULL, -- El asesor que creó el curso
     Nombre NVARCHAR(150) NOT NULL,
     Descripcion NVARCHAR(500),
-    Profesor NVARCHAR(100), -- Mantener por compatibilidad o quitar luego
+    Profesor NVARCHAR(100), 
     FechaCreacion DATETIME DEFAULT GETDATE(),
 
     CONSTRAINT FK_Cursos_Asesor
@@ -159,6 +159,70 @@ CREATE TABLE Asesorias(
     CONSTRAINT FK_Asesoria_Curso
     FOREIGN KEY (IdCurso)
     REFERENCES Cursos(IdCurso)
+    ON DELETE CASCADE
+);
+GO
+
+
+-- ==============================
+-- TABLA EVALUACIONES
+-- ==============================
+
+CREATE TABLE Evaluaciones(
+    IdEvaluacion INT IDENTITY(1,1) PRIMARY KEY,
+    IdCurso INT NOT NULL,
+    Titulo NVARCHAR(200) NOT NULL,
+    Descripcion NVARCHAR(500),
+    FechaCreacion DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Evaluaciones_Curso
+    FOREIGN KEY (IdCurso)
+    REFERENCES Cursos(IdCurso)
+    ON DELETE CASCADE
+);
+GO
+
+
+-- ==============================
+-- TABLA PREGUNTAS
+-- ==============================
+
+CREATE TABLE Preguntas(
+    IdPregunta INT IDENTITY(1,1) PRIMARY KEY,
+    IdEvaluacion INT NOT NULL,
+    Enunciado NVARCHAR(MAX) NOT NULL,
+    OpcionA NVARCHAR(255) NOT NULL,
+    OpcionB NVARCHAR(255) NOT NULL,
+    OpcionC NVARCHAR(255) NOT NULL,
+    RespuestaCorrecta CHAR(1) NOT NULL, -- 'A', 'B' o 'C'
+
+    CONSTRAINT FK_Preguntas_Evaluacion
+    FOREIGN KEY (IdEvaluacion)
+    REFERENCES Evaluaciones(IdEvaluacion)
+    ON DELETE CASCADE
+);
+GO
+
+
+-- ==============================
+-- TABLA RESULTADOS EVALUACION
+-- ==============================
+
+CREATE TABLE ResultadosEvaluacion(
+    IdResultado INT IDENTITY(1,1) PRIMARY KEY,
+    IdUsuario INT NOT NULL,
+    IdEvaluacion INT NOT NULL,
+    Calificacion DECIMAL(5,2) NOT NULL,
+    FechaCompletado DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Resultados_Usuario
+    FOREIGN KEY (IdUsuario)
+    REFERENCES Usuarios(IdUsuario)
+    ON DELETE CASCADE,
+
+    CONSTRAINT FK_Resultados_Evaluacion
+    FOREIGN KEY (IdEvaluacion)
+    REFERENCES Evaluaciones(IdEvaluacion)
     ON DELETE CASCADE
 );
 GO

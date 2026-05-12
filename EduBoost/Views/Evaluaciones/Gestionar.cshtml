@@ -1,0 +1,96 @@
+@model EduBoost.Models.Evaluacion
+@{
+    ViewData["Title"] = "Gestionar Evaluación";
+}
+
+<div class="container py-5 animate-fade-in-up">
+    <div class="row g-5">
+        <!-- Panel Izquierdo: Listado de Preguntas -->
+        <div class="col-lg-7">
+            <div class="glass-card p-5 border-0 shadow-lg h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold text-gradient mb-0">Preguntas Añadidas</h2>
+                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">@Model.Preguntas.Count preguntas</span>
+                    </div>
+                </div>
+
+                @if (!Model.Preguntas.Any())
+                {
+                    <div class="text-center py-5">
+                        <p class="text-muted">Aún no hay preguntas. Utiliza el panel lateral para agregar la primera.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="accordion accordion-flush" id="accordionPreguntas">
+                        @foreach (var p in Model.Preguntas.Select((value, index) => new { value, index }))
+                        {
+                            <div class="accordion-item bg-transparent border-bottom border-primary border-opacity-10 py-3">
+                                <h2 class="accordion-header" id="heading@p.index">
+                                    <button class="accordion-button collapsed bg-transparent fw-bold text-dark px-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@p.index">
+                                        <span class="text-primary me-2">#@(p.index + 1)</span> @p.value.Enunciado
+                                    </button>
+                                </h2>
+                                <div id="collapse@p.index" class="accordion-collapse collapse" data-bs-parent="#accordionPreguntas">
+                                    <div class="accordion-body px-0 small">
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="@(p.value.RespuestaCorrecta == "A" ? "text-success fw-bold" : "text-muted")">A) @p.value.OpcionA</li>
+                                            <li class="@(p.value.RespuestaCorrecta == "B" ? "text-success fw-bold" : "text-muted")">B) @p.value.OpcionB</li>
+                                            <li class="@(p.value.RespuestaCorrecta == "C" ? "text-success fw-bold" : "text-muted")">C) @p.value.OpcionC</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                
+                <div class="mt-5">
+                    <a asp-controller="Cursos" asp-action="Details" asp-route-id="@Model.IdCurso" class="btn btn-outline-primary rounded-pill px-4">Volver al Curso</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Derecho: Formulario Nueva Pregunta -->
+        <div class="col-lg-5">
+            <div class="glass-card p-4 border-0 sticky-top" style="top: 100px;">
+                <h4 class="fw-bold mb-4">Nueva Pregunta</h4>
+                <form asp-action="AgregarPregunta" method="post">
+                    <input type="hidden" name="idEvaluacion" value="@Model.IdEvaluacion" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Enunciado</label>
+                        <textarea name="enunciado" class="form-control rounded-3" rows="3" placeholder="¿Cuál es la pregunta?" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Opción A</label>
+                        <input type="text" name="a" class="form-control rounded-pill" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Opción B</label>
+                        <input type="text" name="b" class="form-control rounded-pill" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Opción C</label>
+                        <input type="text" name="c" class="form-control rounded-pill" required />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold">Respuesta Correcta</label>
+                        <select name="correcta" class="form-select rounded-pill">
+                            <option value="A">Opción A</option>
+                            <option value="B">Opción B</option>
+                            <option value="C">Opción C</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold">Agregar Pregunta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

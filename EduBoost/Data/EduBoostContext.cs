@@ -16,6 +16,9 @@ namespace EduBoost.Data
         public DbSet<Progreso> Progresos { get; set; }
         public DbSet<MaterialCompletado> MaterialesCompletados { get; set; }
         public DbSet<Asesoria> Asesorias { get; set; }
+        public DbSet<Evaluacion> Evaluaciones { get; set; }
+        public DbSet<Pregunta> Preguntas { get; set; }
+        public DbSet<ResultadoEvaluacion> ResultadosEvaluacion { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,12 +44,7 @@ namespace EduBoost.Data
                 entity.Property(c => c.Descripcion).HasMaxLength(500);
                 entity.Property(c => c.Profesor).HasMaxLength(100);
                 entity.Property(c => c.FechaCreacion).HasDefaultValueSql("GETDATE()");
-                
-                // Relación con el Asesor (dueño)
-                entity.HasOne(c => c.Asesor)
-                    .WithMany()
-                    .HasForeignKey(c => c.IdUsuarioAsesor)
-                    .OnDelete(DeleteBehavior.SetNull);
+                entity.HasOne(c => c.Asesor).WithMany().HasForeignKey(c => c.IdUsuarioAsesor).OnDelete(DeleteBehavior.SetNull);
             });
 
             modelBuilder.Entity<MaterialCurso>(entity =>
@@ -56,12 +54,7 @@ namespace EduBoost.Data
                 entity.Property(m => m.Titulo).HasMaxLength(200).IsRequired();
                 entity.Property(m => m.TipoMaterial).HasMaxLength(50).IsRequired();
                 entity.Property(m => m.UrlVideo).HasMaxLength(500);
-                
-                // Relación con el Curso
-                entity.HasOne(m => m.Curso)
-                    .WithMany(c => c.Materiales)
-                    .HasForeignKey(m => m.IdCurso)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(m => m.Curso).WithMany(c => c.Materiales).HasForeignKey(m => m.IdCurso).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Inscripcion>(entity =>
@@ -69,14 +62,8 @@ namespace EduBoost.Data
                 entity.ToTable("Inscripciones");
                 entity.HasKey(i => i.IdInscripcion);
                 entity.Property(i => i.FechaInscripcion).HasDefaultValueSql("GETDATE()");
-                entity.HasOne(i => i.Usuario)
-                    .WithMany()
-                    .HasForeignKey(i => i.IdUsuario)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(i => i.Curso)
-                    .WithMany()
-                    .HasForeignKey(i => i.IdCurso)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(i => i.Usuario).WithMany().HasForeignKey(i => i.IdUsuario).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(i => i.Curso).WithMany().HasForeignKey(i => i.IdCurso).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Progreso>(entity =>
@@ -84,14 +71,8 @@ namespace EduBoost.Data
                 entity.ToTable("Progreso");
                 entity.HasKey(p => p.IdProgreso);
                 entity.Property(p => p.Porcentaje).HasDefaultValue(0);
-                entity.HasOne(p => p.Usuario)
-                    .WithMany()
-                    .HasForeignKey(p => p.IdUsuario)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(p => p.Curso)
-                    .WithMany()
-                    .HasForeignKey(p => p.IdCurso)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(p => p.Usuario).WithMany().HasForeignKey(p => p.IdUsuario).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(p => p.Curso).WithMany().HasForeignKey(p => p.IdCurso).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<MaterialCompletado>(entity =>
@@ -99,10 +80,7 @@ namespace EduBoost.Data
                 entity.ToTable("MaterialesCompletados");
                 entity.HasKey(mc => mc.Id);
                 entity.Property(mc => mc.FechaCompletado).HasDefaultValueSql("GETDATE()");
-                entity.HasOne<Usuario>()
-                    .WithMany()
-                    .HasForeignKey(mc => mc.IdUsuario)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne<Usuario>().WithMany().HasForeignKey(mc => mc.IdUsuario).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Asesoria>(entity =>
@@ -110,18 +88,41 @@ namespace EduBoost.Data
                 entity.ToTable("Asesorias");
                 entity.HasKey(a => a.IdAsesoria);
                 entity.Property(a => a.Estado).HasDefaultValue("Pendiente");
-                entity.HasOne(a => a.Estudiante)
-                    .WithMany()
-                    .HasForeignKey(a => a.IdEstudiante)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(a => a.Asesor)
-                    .WithMany()
-                    .HasForeignKey(a => a.IdAsesor)
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(a => a.Curso)
-                    .WithMany()
-                    .HasForeignKey(a => a.IdCurso)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(a => a.Estudiante).WithMany().HasForeignKey(a => a.IdEstudiante).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(a => a.Asesor).WithMany().HasForeignKey(a => a.IdAsesor).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(a => a.Curso).WithMany().HasForeignKey(a => a.IdCurso).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Evaluacion>(entity =>
+            {
+                entity.ToTable("Evaluaciones");
+                entity.HasKey(e => e.IdEvaluacion);
+                entity.Property(e => e.Titulo).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Descripcion).HasMaxLength(500);
+                entity.Property(e => e.FechaCreacion).HasDefaultValueSql("GETDATE()");
+                entity.HasOne(e => e.Curso).WithMany().HasForeignKey(e => e.IdCurso).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Pregunta>(entity =>
+            {
+                entity.ToTable("Preguntas");
+                entity.HasKey(p => p.IdPregunta);
+                entity.Property(p => p.Enunciado).IsRequired();
+                entity.Property(p => p.OpcionA).HasMaxLength(255).IsRequired();
+                entity.Property(p => p.OpcionB).HasMaxLength(255).IsRequired();
+                entity.Property(p => p.OpcionC).HasMaxLength(255).IsRequired();
+                entity.Property(p => p.RespuestaCorrecta).HasMaxLength(1).IsRequired();
+                entity.HasOne(p => p.Evaluacion).WithMany(e => e.Preguntas).HasForeignKey(p => p.IdEvaluacion).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ResultadoEvaluacion>(entity =>
+            {
+                entity.ToTable("ResultadosEvaluacion");
+                entity.HasKey(re => re.IdResultado);
+                entity.Property(re => re.Calificacion).HasColumnType("decimal(5,2)").IsRequired();
+                entity.Property(re => re.FechaCompletado).HasDefaultValueSql("GETDATE()");
+                entity.HasOne(re => re.Usuario).WithMany().HasForeignKey(re => re.IdUsuario).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(re => re.Evaluacion).WithMany().HasForeignKey(re => re.IdEvaluacion).OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

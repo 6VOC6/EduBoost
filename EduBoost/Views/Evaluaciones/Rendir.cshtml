@@ -1,0 +1,65 @@
+@model EduBoost.Models.Evaluacion
+@{
+    ViewData["Title"] = "Rendir Evaluación";
+}
+
+<div class="container py-5 animate-fade-in-up">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-5 text-center">
+                <h1 class="display-5 fw-bold text-gradient">@Model.Titulo</h1>
+                <p class="text-muted">@Model.Descripcion</p>
+                <div class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-4 py-2">
+                    @Model.Preguntas.Count Preguntas en total
+                </div>
+            </div>
+
+            <form asp-action="Calificar" method="post">
+                <input type="hidden" name="idEvaluacion" value="@Model.IdEvaluacion" />
+                
+                @foreach (var p in Model.Preguntas.Select((value, index) => new { value, index }))
+                {
+                    <div class="glass-card p-4 mb-4 border-0 shadow-sm animate-fade-in-up" style="animation-delay: @(p.index * 0.1)s">
+                        <h5 class="fw-bold mb-4 d-flex">
+                            <span class="text-primary me-3">@(p.index + 1).</span>
+                            @p.value.Enunciado
+                        </h5>
+                        
+                        <div class="d-grid gap-2">
+                            <input type="radio" class="btn-check" name="p_@p.value.IdPregunta" id="p@(p.value.IdPregunta)a" value="A" required>
+                            <label class="btn btn-outline-light text-dark text-start border-0 glass-card-hover py-3 px-4 rounded-3" for="p@(p.value.IdPregunta)a">
+                                <span class="fw-bold me-2">A)</span> @p.value.OpcionA
+                            </label>
+
+                            <input type="radio" class="btn-check" name="p_@p.value.IdPregunta" id="p@(p.value.IdPregunta)b" value="B">
+                            <label class="btn btn-outline-light text-dark text-start border-0 glass-card-hover py-3 px-4 rounded-3" for="p@(p.value.IdPregunta)b">
+                                <span class="fw-bold me-2">B)</span> @p.value.OpcionB
+                            </label>
+
+                            <input type="radio" class="btn-check" name="p_@p.value.IdPregunta" id="p@(p.value.IdPregunta)c" value="C">
+                            <label class="btn btn-outline-light text-dark text-start border-0 glass-card-hover py-3 px-4 rounded-3" for="p@(p.value.IdPregunta)c">
+                                <span class="fw-bold me-2">C)</span> @p.value.OpcionC
+                            </label>
+                        </div>
+                    </div>
+                }
+
+                <div class="text-center mt-5">
+                    <button type="submit" class="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-lg">Finalizar y Calificar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-card-hover:hover {
+        background: rgba(255, 255, 255, 0.4) !important;
+        transform: translateX(5px);
+    }
+    .btn-check:checked + .btn-outline-light {
+        background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%) !important;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    }
+</style>

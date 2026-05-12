@@ -37,6 +37,10 @@ namespace EduBoost.Controllers
             
             if (curso == null) return NotFound();
 
+            // Buscar la evaluación del curso
+            var evaluacion = await _context.Evaluaciones.FirstOrDefaultAsync(e => e.IdCurso == id);
+            ViewBag.Evaluacion = evaluacion;
+
             var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userIdStr != null)
             {
@@ -46,6 +50,13 @@ namespace EduBoost.Controllers
                 
                 // Verificar si es el dueño
                 ViewBag.EsDuenio = curso.IdUsuarioAsesor == userId;
+
+                // Si hay evaluación, ver si ya la rindió
+                if (evaluacion != null)
+                {
+                    ViewBag.ResultadoEvaluacion = await _context.ResultadosEvaluacion
+                        .FirstOrDefaultAsync(r => r.IdUsuario == userId && r.IdEvaluacion == evaluacion.IdEvaluacion);
+                }
             }
 
             return View(curso);

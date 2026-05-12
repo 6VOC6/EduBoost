@@ -1,0 +1,41 @@
+@model EduBoost.Models.Evaluacion
+@{
+    ViewData["Title"] = "Crear Evaluación";
+    var curso = ViewBag.Curso as EduBoost.Models.Curso;
+}
+
+<div class="container py-5 animate-fade-in-up">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="glass-card p-5 border-0 shadow-lg">
+                <div class="text-center mb-4">
+                    <div class="course-icon-wrapper mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+                          <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                        </svg>
+                    </div>
+                    <h2 class="fw-bold text-gradient mb-2">Nueva Evaluación</h2>
+                    <p class="text-muted small">Configura el examen para el curso: <strong>@curso?.Nombre</strong></p>
+                </div>
+
+                <form asp-action="Create" method="post">
+                    <input type="hidden" asp-for="IdCurso" value="@curso?.IdCurso" />
+                    
+                    <div class="form-floating mb-4">
+                        <input asp-for="Titulo" class="form-control" placeholder="Título de la evaluación" required />
+                        <label asp-for="Titulo">Título del Examen</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <textarea asp-for="Descripcion" class="form-control" placeholder="Descripción" style="height: 100px"></textarea>
+                        <label asp-for="Descripcion">Instrucciones o descripción</label>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary rounded-pill py-3 fw-bold shadow-sm">Continuar y Agregar Preguntas</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
