@@ -7,6 +7,10 @@ using System.Security.Claims;
 
 namespace EduBoost.Controllers
 {
+    /// <summary>
+    /// Controlador para la gestión de cursos, materiales e inscripciones.
+    /// Rama: Rama-Victoriano
+    /// </summary>
     [Authorize]
     public class CursosController : Controller
     {
