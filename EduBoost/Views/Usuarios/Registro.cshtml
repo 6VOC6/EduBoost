@@ -24,7 +24,7 @@
                     <div class="col-md-6">
                         <div class="form-floating">
                             <input asp-for="Nombre" class="form-control" autocomplete="name" placeholder="Ej. Maria Lopez" />
-                            <label asp-for="Nombre" class="form-label text-muted"></label>
+                            <label asp-for="Nombre" class="form-label text-muted">Nombre completo</label>
                         </div>
                         <span asp-validation-for="Nombre" class="text-danger small mt-1"></span>
                     </div>
@@ -32,7 +32,7 @@
                     <div class="col-md-6">
                         <div class="form-floating">
                             <input asp-for="Correo" class="form-control" autocomplete="email" placeholder="nombre@correo.com" />
-                            <label asp-for="Correo" class="form-label text-muted"></label>
+                            <label asp-for="Correo" class="form-label text-muted">Correo electrónico</label>
                         </div>
                         <span asp-validation-for="Correo" class="text-danger small mt-1"></span>
                     </div>
@@ -41,7 +41,7 @@
                         <div class="input-group has-validation">
                             <div class="form-floating flex-grow-1">
                                 <input asp-for="Password" class="form-control" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" autocomplete="new-password" id="registro-password" placeholder="Contraseña" />
-                                <label asp-for="Password" class="form-label text-muted"></label>
+                                <label asp-for="Password" class="form-label text-muted">Contraseña</label>
                             </div>
                             <button type="button" class="btn btn-light border border-start-0 text-muted" style="border-top-right-radius: 0.75rem; border-bottom-right-radius: 0.75rem;" data-password-toggle="#registro-password">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
@@ -58,7 +58,7 @@
                         <div class="input-group has-validation">
                             <div class="form-floating flex-grow-1">
                                 <input asp-for="ConfirmarPassword" class="form-control" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" autocomplete="new-password" id="registro-confirm-password" placeholder="Confirmar" />
-                                <label asp-for="ConfirmarPassword" class="form-label text-muted"></label>
+                                <label asp-for="ConfirmarPassword" class="form-label text-muted">Confirmar contraseña</label>
                             </div>
                             <button type="button" class="btn btn-light border border-start-0 text-muted" style="border-top-right-radius: 0.75rem; border-bottom-right-radius: 0.75rem;" data-password-toggle="#registro-confirm-password">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
@@ -76,7 +76,7 @@
                                 <option value="Estudiante">Estudiante</option>
                                 <option value="Asesor">Asesor</option>
                             </select>
-                            <label asp-for="Rol" class="form-label text-muted"></label>
+                            <label asp-for="Rol" class="form-label text-muted">Rol en la plataforma</label>
                         </div>
                         <span asp-validation-for="Rol" class="text-danger small mt-1"></span>
                     </div>
@@ -103,7 +103,7 @@
                 if (!target) return;
                 var showing = target.type === "text";
                 target.type = showing ? "password" : "text";
-                button.textContent = showing ? "Mostrar" : "Ocultar";
+                // Keep icon, just change type
             });
         });
     </script>

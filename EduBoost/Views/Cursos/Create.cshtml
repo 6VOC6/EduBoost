@@ -1,5 +1,4 @@
 @model EduBoost.Models.Curso
-
 @{
     ViewData["Title"] = (ViewContext.RouteData.Values["action"]?.ToString() == "Create" ? "Crear Nuevo Curso" : "Editar Curso");
 }
@@ -24,6 +23,8 @@
                     {
                         <input type="hidden" asp-for="IdCurso" />
                         <input type="hidden" asp-for="FechaCreacion" />
+                        <input type="hidden" asp-for="IdUsuarioAsesor" />
+                        <input type="hidden" asp-for="Profesor" />
                     }
 
                     <div class="form-floating mb-4">
@@ -36,12 +37,6 @@
                         <textarea asp-for="Descripcion" class="form-control" placeholder="Descripción" style="height: 120px" required></textarea>
                         <label asp-for="Descripcion">Descripción</label>
                         <span asp-validation-for="Descripcion" class="text-danger small"></span>
-                    </div>
-
-                    <div class="form-floating mb-4">
-                        <input asp-for="Profesor" class="form-control" placeholder="Nombre del profesor" required />
-                        <label asp-for="Profesor">Profesor Asignado</label>
-                        <span asp-validation-for="Profesor" class="text-danger small"></span>
                     </div>
 
                     <div class="d-grid gap-2">

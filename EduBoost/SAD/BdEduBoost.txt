@@ -30,10 +30,16 @@ GO
 
 CREATE TABLE Cursos(
     IdCurso INT IDENTITY(1,1) PRIMARY KEY,
+    IdUsuarioAsesor INT NULL, -- El asesor que creó el curso
     Nombre NVARCHAR(150) NOT NULL,
     Descripcion NVARCHAR(500),
-    Profesor NVARCHAR(100),
-    FechaCreacion DATETIME DEFAULT GETDATE()
+    Profesor NVARCHAR(100), -- Mantener por compatibilidad o quitar luego
+    FechaCreacion DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Cursos_Asesor
+    FOREIGN KEY (IdUsuarioAsesor)
+    REFERENCES Usuarios(IdUsuario)
+    ON DELETE SET NULL
 );
 GO
 
@@ -105,50 +111,6 @@ GO
 
 
 -- ==============================
--- DATOS DE PRUEBA
--- ==============================
-
-INSERT INTO Usuarios (Nombre, Correo, Password, Rol)
-VALUES
-('Admin Sistema', 'admin@eduboost.com', '123456', 'Administrador'),
-('Juan Perez', 'juan@correo.com', '123456', 'Estudiante'),
-('Maria Lopez', 'maria@correo.com', '123456', 'Estudiante');
-GO
-
-
-INSERT INTO Cursos (Nombre, Descripcion, Profesor)
-VALUES
-('Programación Básica', 'Introducción a la programación', 'Ing. Carlos Ruiz'),
-('Base de Datos', 'Fundamentos de SQL y bases de datos', 'Ing. Ana Torres'),
-('Matemáticas Discretas', 'Lógica y estructuras matemáticas', 'Dr. Luis Gomez');
-GO
-
-
-INSERT INTO Inscripciones (IdUsuario, IdCurso)
-VALUES
-(2,1),
-(2,2),
-(3,1);
-GO
-
-
-INSERT INTO MaterialCurso (IdCurso, Titulo, TipoMaterial, UrlVideo)
-VALUES
-(1,'Introducción a la programación','Video','https://www.youtube.com/watch?v=zOjov-2OZ0E'),
-(1,'Variables y tipos de datos','Video','https://www.youtube.com/watch?v=rfscVS0vtbw'),
-(2,'Introducción a SQL','Video','https://www.youtube.com/watch?v=HXV3zeQKqGY');
-GO
-
-
-INSERT INTO Progreso (IdUsuario, IdCurso, Porcentaje, UltimaActualizacion)
-VALUES
-(2,1,30,GETDATE()),
-(2,2,10,GETDATE()),
-(3,1,50,GETDATE());
-GO
-
-
--- ==============================
 -- TABLA MATERIALES COMPLETADOS
 -- ==============================
 
@@ -187,7 +149,8 @@ CREATE TABLE Asesorias(
 
     CONSTRAINT FK_Asesoria_Estudiante
     FOREIGN KEY (IdEstudiante)
-    REFERENCES Usuarios(IdUsuario),
+    REFERENCES Usuarios(IdUsuario)
+    ON DELETE CASCADE,
 
     CONSTRAINT FK_Asesoria_Asesor
     FOREIGN KEY (IdAsesor)
@@ -196,5 +159,6 @@ CREATE TABLE Asesorias(
     CONSTRAINT FK_Asesoria_Curso
     FOREIGN KEY (IdCurso)
     REFERENCES Cursos(IdCurso)
+    ON DELETE CASCADE
 );
 GO

@@ -2,7 +2,6 @@ namespace EduBoost.Data
 {
     using EduBoost.Models;
     using Microsoft.EntityFrameworkCore;
-    using System.Collections.Generic;
 
     public class EduBoostContext : DbContext
     {
@@ -38,10 +37,16 @@ namespace EduBoost.Data
             {
                 entity.ToTable("Cursos");
                 entity.HasKey(c => c.IdCurso);
-                entity.Property(c => c.Nombre).HasMaxLength(200).IsRequired();
-                entity.Property(c => c.Descripcion).HasMaxLength(1000).IsRequired();
-                entity.Property(c => c.Profesor).HasMaxLength(150).IsRequired();
+                entity.Property(c => c.Nombre).HasMaxLength(150).IsRequired();
+                entity.Property(c => c.Descripcion).HasMaxLength(500);
+                entity.Property(c => c.Profesor).HasMaxLength(100);
                 entity.Property(c => c.FechaCreacion).HasDefaultValueSql("GETDATE()");
+                
+                // Relación con el Asesor (dueño)
+                entity.HasOne(c => c.Asesor)
+                    .WithMany()
+                    .HasForeignKey(c => c.IdUsuarioAsesor)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             modelBuilder.Entity<MaterialCurso>(entity =>
@@ -51,8 +56,10 @@ namespace EduBoost.Data
                 entity.Property(m => m.Titulo).HasMaxLength(200).IsRequired();
                 entity.Property(m => m.TipoMaterial).HasMaxLength(50).IsRequired();
                 entity.Property(m => m.UrlVideo).HasMaxLength(500);
-                entity.HasOne<Curso>()
-                    .WithMany()
+                
+                // Relación con el Curso
+                entity.HasOne(m => m.Curso)
+                    .WithMany(c => c.Materiales)
                     .HasForeignKey(m => m.IdCurso)
                     .OnDelete(DeleteBehavior.Cascade);
             });
@@ -65,11 +72,11 @@ namespace EduBoost.Data
                 entity.HasOne(i => i.Usuario)
                     .WithMany()
                     .HasForeignKey(i => i.IdUsuario)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(i => i.Curso)
                     .WithMany()
                     .HasForeignKey(i => i.IdCurso)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Progreso>(entity =>
@@ -80,11 +87,11 @@ namespace EduBoost.Data
                 entity.HasOne(p => p.Usuario)
                     .WithMany()
                     .HasForeignKey(p => p.IdUsuario)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(p => p.Curso)
                     .WithMany()
                     .HasForeignKey(p => p.IdCurso)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<MaterialCompletado>(entity =>
@@ -92,6 +99,10 @@ namespace EduBoost.Data
                 entity.ToTable("MaterialesCompletados");
                 entity.HasKey(mc => mc.Id);
                 entity.Property(mc => mc.FechaCompletado).HasDefaultValueSql("GETDATE()");
+                entity.HasOne<Usuario>()
+                    .WithMany()
+                    .HasForeignKey(mc => mc.IdUsuario)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Asesoria>(entity =>
@@ -102,7 +113,7 @@ namespace EduBoost.Data
                 entity.HasOne(a => a.Estudiante)
                     .WithMany()
                     .HasForeignKey(a => a.IdEstudiante)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(a => a.Asesor)
                     .WithMany()
                     .HasForeignKey(a => a.IdAsesor)
@@ -110,7 +121,7 @@ namespace EduBoost.Data
                 entity.HasOne(a => a.Curso)
                     .WithMany()
                     .HasForeignKey(a => a.IdCurso)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }
