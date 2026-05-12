@@ -1,0 +1,3 @@
+Prueba de commit para la rama rama-Dulce.
+Fecha: 2026-05-12
+Estado: Exitoso (esperemos)
