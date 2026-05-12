@@ -1,7 +1,7 @@
 ================================================================================
            EDUBOOST - RESUMEN DE AVANCES ACADÉMICOS
 ================================================================================
-Fecha de actualización: 11 de mayo de 2026
+Fecha de actualización: 12 de mayo de 2026
 Elaborado por: Antigravity (AI Assistant)
 Proyecto: EduBoost - Plataforma Web de Apoyo Académico
 
@@ -12,56 +12,58 @@ Proyecto: EduBoost - Plataforma Web de Apoyo Académico
 - Configuración de autenticación mediante usuario 'sa' y contraseña 'Admin123'.
 - Implementación de 'TrustServerCertificate=True' para entornos de desarrollo.
 - Sincronización del EduBoostContext con las tablas del script original (Usuarios, Cursos, MaterialCurso, Inscripciones, Progreso).
+- [NUEVO] Inclusión de tablas para Asesorías, Evaluaciones, Preguntas y Resultados.
 
 --------------------------------------------------------------------------------
-2. MÓDULO DE GESTIÓN DE CURSOS (CRUD)
+2. MÓDULO DE GESTIÓN DE CURSOS (MEJORADO)
 --------------------------------------------------------------------------------
-- Implementación de CursosController con soporte completo para:
-    * Listado de cursos (Index)
-    * Detalle del curso (Details)
-    * Creación, edición y eliminación (Restringido a Administradores/Asesores).
-- Integración de validaciones de servidor y cliente para asegurar la integridad de los datos.
+- Implementación de CursosController con soporte completo para CRUD.
+- [NUEVO] Asignación automática de dueño (Asesor) al crear cursos.
+- [NUEVO] Panel de gestión de materiales integrado en la vista de detalles del curso.
+- [NUEVO] Lógica de previsualización para asesores sin necesidad de inscripción.
 
 --------------------------------------------------------------------------------
-3. SISTEMA DE INSCRIPCIONES Y MIS CURSOS
+3. DASHBOARD DE USUARIO Y ASESOR (PANEL DUAL)
 --------------------------------------------------------------------------------
-- Desarrollo del flujo de inscripción para estudiantes.
-- Lógica de validación para evitar duplicidad en inscripciones.
-- Creación de la sección "Mis Cursos" donde el estudiante puede ver exclusivamente sus materias activas y su porcentaje de avance.
+- Rediseño de "Mis Cursos" con sistema de pestañas premium.
+- Sección "Aprendiendo": Seguimiento de cursos donde el usuario es alumno.
+- Sección "Gestionando": Acceso rápido para asesores a sus cursos creados.
 
 --------------------------------------------------------------------------------
-4. PORTAL DE APRENDIZAJE Y VISOR DE CONTENIDO
+4. MÓDULO DE ASESORÍAS PERSONALIZADAS
 --------------------------------------------------------------------------------
-- Implementación de la vista 'VerContenido' para el consumo de materiales educativos.
-- Integración de reproductor de video de YouTube (conversión automática de URLs).
-- Lista de reproducción lateral para navegación fluida entre temas del curso.
-- Botón de "Marcar como completado" con actualización en tiempo real.
+- Sistema de solicitud de asesorías entre estudiantes y asesores.
+- Gestión de estados (Pendiente, Aceptada, Finalizada).
+- Integración de enlaces para reuniones virtuales.
 
 --------------------------------------------------------------------------------
-5. SEGUIMIENTO DE PROGRESO GRANULAR
+5. MÓDULO DE EVALUACIONES (EXÁMENES)
 --------------------------------------------------------------------------------
-- Creación del modelo 'MaterialCompletado' para un seguimiento preciso.
-- Lógica de cálculo automático de progreso: (Materiales Vistos / Total Materiales) * 100.
-- Actualización automática de la tabla 'Progreso' al interactuar con el contenido.
+- Creación de exámenes dinámicos vinculados a cursos.
+- Banco de preguntas de opción múltiple (A, B, C).
+- Sistema de calificación automática (0.0 a 10.0).
+- Retroalimentación inmediata y guardado de resultados históricos.
 
 --------------------------------------------------------------------------------
-6. DISEÑO Y EXPERIENCIA DE USUARIO (UI/UX)
+6. DISEÑO, CONCORDANCIA Y UX
 --------------------------------------------------------------------------------
-- Aplicación de estética "Glassmorphism" (efecto cristal) en toda la interfaz.
-- Uso de gradientes premium, desenfoques de fondo (backdrop-filter) y tipografía 'Outfit' de Google Fonts.
-- Implementación de notificaciones dinámicas (TempData) para feedback al usuario.
+- Estética "Glassmorphism" aplicada y unificada.
+- Corrección de concordancia de lenguaje (Español integral) en toda la plataforma.
+- Iconografía consistente en navegación y tarjetas de contenido.
+- Sistema de notificaciones mejorado con iconos y colores contextuales.
 
 --------------------------------------------------------------------------------
 ESTADO ACTUAL:
 --------------------------------------------------------------------------------
-- El flujo principal (Explorar -> Inscribirse -> Aprender -> Seguir Progreso) está 100% funcional.
-- Código compilado sin errores y cambios sincronizados en el repositorio de GitHub.
+- El sistema es 100% funcional para el ciclo: Registro -> Creación -> Inscripción -> Aprendizaje -> Evaluación -> Asesoría.
+- La base de datos está normalizada y optimizada con borrado en cascada.
+- Código limpio, documentado y sincronizado en GitHub (Rama master).
 
 --------------------------------------------------------------------------------
 PRÓXIMOS PASOS RECOMENDADOS:
 --------------------------------------------------------------------------------
-- Implementación del sistema de Asesorías personalizadas.
-- Módulo de Evaluaciones/Exámenes para validar el aprendizaje.
-- Mejoras en la carga de archivos (PDF/Documentos) por parte de asesores.
+- Implementación de reportes de desempeño para administradores.
+- Sistema de chat en tiempo real para asesorías.
+- Soporte para subida física de documentos (PDF/PPT) al servidor.
 
 ================================================================================
