@@ -21,6 +21,11 @@ namespace EduBoost.Models
         [StringLength(500)]
         public string? UrlVideo { get; set; }
 
+        [StringLength(500)]
+        public string? RutaArchivo { get; set; }
+
+        public bool Activo { get; set; } = true;
+
         // Propiedad de navegación
         [ForeignKey("IdCurso")]
         public virtual Curso? Curso { get; set; }

@@ -11,10 +11,12 @@ namespace EduBoost.Controllers
     public class CursosController : Controller
     {
         private readonly EduBoostContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public CursosController(EduBoostContext context)
+        public CursosController(EduBoostContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         // GET: Cursos
@@ -201,7 +203,7 @@ namespace EduBoost.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrador,Asesor")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AgregarMaterial(int idCurso, string titulo, string tipo, string url)
+        public async Task<IActionResult> AgregarMaterial(int idCurso, string titulo, string tipo, string? url, IFormFile? archivoFisico)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var curso = await _context.Cursos.FindAsync(idCurso);
@@ -209,12 +211,33 @@ namespace EduBoost.Controllers
             if (curso == null) return NotFound();
             if (curso.IdUsuarioAsesor != userId && !User.IsInRole("Administrador")) return Forbid();
 
+            string? rutaArchivo = null;
+
+            // Procesar el archivo si existe
+            if (archivoFisico != null && archivoFisico.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "materiales");
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(archivoFisico.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await archivoFisico.CopyToAsync(fileStream);
+                }
+
+                rutaArchivo = "/uploads/materiales/" + uniqueFileName;
+                tipo = "DocumentoFisico"; // Sobreescribimos el tipo si es archivo físico
+            }
+
             var material = new MaterialCurso
             {
                 IdCurso = idCurso,
                 Titulo = titulo,
                 TipoMaterial = tipo,
-                UrlVideo = url
+                UrlVideo = url,
+                RutaArchivo = rutaArchivo
             };
 
             _context.MaterialCurso.Add(material);

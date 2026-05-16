@@ -101,8 +101,18 @@
                                 <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1-1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
                                 <path d="M4.603 12.087a.81.81 0 0 1-.438-.42c-.195-.406-.139-.902.132-1.319.545-.844 1.332-1.146 2.174-1.146 1.157 0 1.954.512 2.651 1.25.75-.812 1.487-1.428 2.247-1.428 1.157 0 1.954.512 2.651 1.25.75-.812 1.487-1.428 2.247-1.428.15 0 .285.012.392.036.31.069.49.255.49.52 0 .227-.123.407-.333.53a.98.98 0 0 1-.416.115c-.417 0-.75-.246-1.146-.66-.453.478-.992.83-1.574.83-1.157 0-1.954-.512-2.651-1.25-.75.812-1.487 1.428-2.247 1.428-1.157 0-1.954-.512-2.651-1.25z"/>
                             </svg>
-                            <h4 class="text-muted">Documento no disponible para previsualización</h4>
-                            <p class="text-muted small">Este material es de tipo @currentMaterial.TipoMaterial.</p>
+                            @if (currentMaterial.TipoMaterial == "DocumentoFisico" && !string.IsNullOrEmpty(currentMaterial.RutaArchivo))
+                            {
+                                <h4 class="text-primary mb-3">Documento Adjunto</h4>
+                                <a href="@currentMaterial.RutaArchivo" target="_blank" class="btn btn-outline-primary rounded-pill px-4 fw-bold">
+                                    <i class="bi bi-download me-2"></i>Descargar Documento
+                                </a>
+                            }
+                            else
+                            {
+                                <h4 class="text-muted">Documento no disponible para previsualización</h4>
+                                <p class="text-muted small">Este material es de tipo @currentMaterial.TipoMaterial.</p>
+                            }
                         </div>
                     }
 

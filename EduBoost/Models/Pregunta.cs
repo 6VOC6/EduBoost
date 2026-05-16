@@ -29,6 +29,8 @@ namespace EduBoost.Models
         [StringLength(1)]
         public string RespuestaCorrecta { get; set; } = "A"; // 'A', 'B' o 'C'
 
+        public bool Activo { get; set; } = true;
+
         // Propiedad de navegación
         [ForeignKey("IdEvaluacion")]
         public virtual Evaluacion? Evaluacion { get; set; }

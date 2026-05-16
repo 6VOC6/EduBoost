@@ -226,3 +226,20 @@ CREATE TABLE ResultadosEvaluacion(
     ON DELETE CASCADE
 );
 GO
+
+-- ==============================
+-- ACTUALIZACIONES (SOFT DELETE Y RECUPERACIÓN)
+-- ==============================
+
+ALTER TABLE Usuarios ADD Activo BIT DEFAULT 1 NOT NULL;
+ALTER TABLE Usuarios ADD TokenRecuperacion NVARCHAR(100) NULL;
+ALTER TABLE Usuarios ADD ExpiracionTokenRecuperacion DATETIME NULL;
+
+ALTER TABLE Cursos ADD Activo BIT DEFAULT 1 NOT NULL;
+ALTER TABLE MaterialCurso ADD Activo BIT DEFAULT 1 NOT NULL;
+ALTER TABLE MaterialCurso ADD RutaArchivo NVARCHAR(500) NULL;
+
+ALTER TABLE Asesorias ADD Activo BIT DEFAULT 1 NOT NULL;
+ALTER TABLE Evaluaciones ADD Activo BIT DEFAULT 1 NOT NULL;
+ALTER TABLE Preguntas ADD Activo BIT DEFAULT 1 NOT NULL;
+GO

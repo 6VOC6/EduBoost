@@ -22,6 +22,8 @@ namespace EduBoost.Models
 
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
+        public bool Activo { get; set; } = true;
+
         // Propiedades de Navegación
         [ForeignKey("IdUsuarioAsesor")]
         public virtual Usuario? Asesor { get; set; }

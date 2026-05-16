@@ -1,4 +1,4 @@
-﻿namespace EduBoost.Controllers
+namespace EduBoost.Controllers
 {
     using EduBoost.Models;
     using Microsoft.AspNetCore.Mvc;
@@ -168,6 +168,81 @@
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction(nameof(Login));
+        }
+
+        [AllowAnonymous]
+        public IActionResult RecuperarPassword()
+        {
+            if (User.Identity?.IsAuthenticated == true) return RedirectToAction("Index", "Home");
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RecuperarPassword(RecuperarPasswordViewModel model)
+        {
+            if (User.Identity?.IsAuthenticated == true) return RedirectToAction("Index", "Home");
+
+            if (!ModelState.IsValid) return View(model);
+
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Correo.ToLower() == model.Correo.ToLowerInvariant());
+            if (usuario != null)
+            {
+                // Generar token
+                usuario.TokenRecuperacion = Guid.NewGuid().ToString("N");
+                usuario.ExpiracionTokenRecuperacion = DateTime.UtcNow.AddHours(1);
+                await _context.SaveChangesAsync();
+
+                // Simular envío de correo guardando en TempData para desarrollo
+                TempData["RecuperacionDebugToken"] = usuario.TokenRecuperacion;
+            }
+
+            TempData["SuccessMessage"] = "Si el correo existe en nuestra base de datos, hemos generado un enlace para restablecer tu contraseña. (Revisa el aviso para simulación).";
+            return RedirectToAction(nameof(Login));
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(string token)
+        {
+            if (User.Identity?.IsAuthenticated == true) return RedirectToAction("Index", "Home");
+
+            if (string.IsNullOrEmpty(token)) return RedirectToAction("Login");
+
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.TokenRecuperacion == token && u.ExpiracionTokenRecuperacion > DateTime.UtcNow);
+            if (usuario == null)
+            {
+                TempData["ErrorMessage"] = "El token es inválido o ha expirado.";
+                return RedirectToAction("Login");
+            }
+
+            return View(new ResetPasswordViewModel { Token = token });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (User.Identity?.IsAuthenticated == true) return RedirectToAction("Index", "Home");
+
+            if (!ModelState.IsValid) return View(model);
+
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.TokenRecuperacion == model.Token && u.ExpiracionTokenRecuperacion > DateTime.UtcNow);
+            if (usuario == null)
+            {
+                TempData["ErrorMessage"] = "El token es inválido o ha expirado.";
+                return RedirectToAction("Login");
+            }
+
+            usuario.Password = HashPassword(model.NuevaPassword);
+            usuario.TokenRecuperacion = null;
+            usuario.ExpiracionTokenRecuperacion = null;
+            
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Contraseña restablecida correctamente. Puedes iniciar sesión.";
             return RedirectToAction(nameof(Login));
         }
 

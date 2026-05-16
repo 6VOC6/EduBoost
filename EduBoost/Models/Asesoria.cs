@@ -32,6 +32,8 @@ namespace EduBoost.Models
         [Display(Name = "Enlace de Reunión")]
         public string? EnlaceReunion { get; set; }
 
+        public bool Activo { get; set; } = true;
+
         // Navegación
         [ForeignKey("IdEstudiante")]
         public virtual Usuario? Estudiante { get; set; }

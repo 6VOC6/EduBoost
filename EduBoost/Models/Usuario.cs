@@ -1,4 +1,4 @@
-﻿namespace EduBoost.Models
+namespace EduBoost.Models
 {
     using System.ComponentModel.DataAnnotations;
 
@@ -23,5 +23,12 @@
         public string Rol { get; set; } = "Estudiante";
 
         public DateTime FechaRegistro { get; set; }
+
+        public bool Activo { get; set; } = true;
+
+        [StringLength(100)]
+        public string? TokenRecuperacion { get; set; }
+
+        public DateTime? ExpiracionTokenRecuperacion { get; set; }
     }
 }

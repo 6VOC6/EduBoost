@@ -124,6 +124,43 @@ namespace EduBoost.Data
                 entity.HasOne(re => re.Usuario).WithMany().HasForeignKey(re => re.IdUsuario).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(re => re.Evaluacion).WithMany().HasForeignKey(re => re.IdEvaluacion).OnDelete(DeleteBehavior.Cascade);
             });
+
+            // Configurar filtros de consulta global para Soft Delete
+            modelBuilder.Entity<Usuario>().HasQueryFilter(u => u.Activo);
+            modelBuilder.Entity<Curso>().HasQueryFilter(c => c.Activo);
+            modelBuilder.Entity<MaterialCurso>().HasQueryFilter(m => m.Activo);
+            modelBuilder.Entity<Asesoria>().HasQueryFilter(a => a.Activo);
+            modelBuilder.Entity<Evaluacion>().HasQueryFilter(e => e.Activo);
+            modelBuilder.Entity<Pregunta>().HasQueryFilter(p => p.Activo);
+        }
+
+        public override int SaveChanges()
+        {
+            ApplySoftDelete();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ApplySoftDelete();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void ApplySoftDelete()
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.State == EntityState.Deleted)
+                {
+                    // Comprobar si la entidad tiene la propiedad 'Activo'
+                    var property = entry.Properties.FirstOrDefault(p => p.Metadata.Name == "Activo");
+                    if (property != null)
+                    {
+                        entry.State = EntityState.Modified;
+                        property.CurrentValue = false;
+                    }
+                }
+            }
         }
     }
 }

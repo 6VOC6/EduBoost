@@ -39,7 +39,7 @@
                         
                         <div class="bg-light p-4 rounded-4 mb-4">
                             <h6 class="fw-bold mb-3">Agregar nuevo material</h6>
-                            <form asp-action="AgregarMaterial" method="post" class="row g-3">
+                            <form asp-action="AgregarMaterial" method="post" enctype="multipart/form-data" class="row g-3">
                                 <input type="hidden" name="idCurso" value="@Model.IdCurso" />
                                 <div class="col-md-6">
                                     <input type="text" name="titulo" class="form-control rounded-pill" placeholder="Título del material" required />
@@ -48,14 +48,16 @@
                                     <select name="tipo" class="form-select rounded-pill">
                                         <option value="Video">Video</option>
                                         <option value="Lectura">Lectura</option>
+                                        <option value="DocumentoFisico">Documento Físico</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
                                     <button type="submit" class="btn btn-primary w-100 rounded-pill">Agregar</button>
                                 </div>
-                                <div class="col-12">
-                                    <input type="url" name="url" class="form-control rounded-pill" placeholder="URL del video (YouTube)" />
-                                    <div class="form-text small px-2">Solo necesario si es un video.</div>
+                                <div class="col-12 mt-3">
+                                    <label class="form-label text-muted small mb-1">Opciones (elige una):</label>
+                                    <input type="url" name="url" class="form-control rounded-pill mb-2" placeholder="URL del video (ej. YouTube)" />
+                                    <input type="file" name="archivoFisico" class="form-control rounded-pill" accept=".pdf,.doc,.docx,.ppt,.pptx" />
                                 </div>
                             </form>
                         </div>

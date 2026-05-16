@@ -1,0 +1,135 @@
+@{
+    ViewData["Title"] = "Panel de Administración";
+    var cursosRecientes = ViewBag.CursosRecientes as List<EduBoost.Models.Curso> ?? new List<EduBoost.Models.Curso>();
+}
+
+<div class="container-fluid px-4 py-4 animate-fade-in-up">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-gradient mb-0">Panel de Control</h2>
+            <p class="text-muted mb-0">Resumen general del estado de EduBoost.</p>
+        </div>
+    </div>
+
+    <!-- Estadísticas Principales -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-xl-3">
+            <div class="glass-card p-4 border-0 shadow-sm h-100 d-flex flex-column justify-content-between text-white" style="background: linear-gradient(135deg, var(--primary-color) 0%, #312e81 100%);">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <p class="text-white-50 small mb-1 fw-bold text-uppercase tracking-wider">Usuarios Totales</p>
+                        <h2 class="display-5 fw-bold mb-0">@ViewBag.TotalUsuarios</h2>
+                    </div>
+                    <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                        <i class="bi bi-people-fill fs-3"></i>
+                    </div>
+                </div>
+                <div class="small text-white-50">
+                    <span class="fw-bold">@ViewBag.TotalEstudiantes</span> Estudiantes &bull; <span class="fw-bold">@ViewBag.TotalAsesores</span> Asesores
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="glass-card p-4 border-0 shadow-sm h-100 d-flex flex-column justify-content-between">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <p class="text-muted small mb-1 fw-bold text-uppercase tracking-wider">Cursos Activos</p>
+                        <h2 class="display-5 fw-bold text-dark mb-0">@ViewBag.TotalCursos</h2>
+                    </div>
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle p-3">
+                        <i class="bi bi-journal-bookmark-fill fs-3"></i>
+                    </div>
+                </div>
+                <div class="small text-muted">
+                    <i class="bi bi-arrow-up-right text-success me-1"></i> <span class="fw-bold">@ViewBag.TotalInscripciones</span> Inscripciones
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="glass-card p-4 border-0 shadow-sm h-100 d-flex flex-column justify-content-between">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <p class="text-muted small mb-1 fw-bold text-uppercase tracking-wider">Asesorías Solicitadas</p>
+                        <h2 class="display-5 fw-bold text-dark mb-0">@ViewBag.AsesoriasTotales</h2>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-3">
+                        <i class="bi bi-calendar2-check-fill fs-3"></i>
+                    </div>
+                </div>
+                <div class="small text-muted">
+                    <span class="badge bg-warning text-dark">@ViewBag.AsesoriasPendientes Pendientes</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-xl-3">
+            <div class="glass-card p-4 border-0 shadow-sm h-100 d-flex flex-column justify-content-between">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <p class="text-muted small mb-1 fw-bold text-uppercase tracking-wider">Salud del Sistema</p>
+                        <h2 class="display-5 fw-bold text-success mb-0">Optimo</h2>
+                    </div>
+                    <div class="bg-info bg-opacity-10 text-info rounded-circle p-3">
+                        <i class="bi bi-activity fs-3"></i>
+                    </div>
+                </div>
+                <div class="progress rounded-pill mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cursos Recientes -->
+    <div class="row">
+        <div class="col-12">
+            <div class="glass-card p-4 border-0 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Cursos Agregados Recientemente</h5>
+                    <a asp-controller="Cursos" asp-action="Index" class="btn btn-sm btn-outline-primary rounded-pill">Ver Todos</a>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="text-muted small text-uppercase">
+                            <tr>
+                                <th>Nombre del Curso</th>
+                                <th>Asesor / Profesor</th>
+                                <th>Fecha de Creación</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var curso in cursosRecientes)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary bg-opacity-10 text-primary p-2 rounded me-3">
+                                                <i class="bi bi-book"></i>
+                                            </div>
+                                            <span class="fw-bold">@curso.Nombre</span>
+                                        </div>
+                                    </td>
+                                    <td>@curso.Profesor</td>
+                                    <td>@curso.FechaCreacion.ToString("dd MMM, yyyy")</td>
+                                    <td>
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2">Activo</span>
+                                    </td>
+                                </tr>
+                            }
+                            @if(!cursosRecientes.Any())
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">No hay cursos registrados.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
