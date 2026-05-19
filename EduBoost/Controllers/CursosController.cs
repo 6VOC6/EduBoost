@@ -152,6 +152,12 @@ namespace EduBoost.Controllers
             var curso = await _context.Cursos.FirstOrDefaultAsync(m => m.IdCurso == id);
             if (curso == null) return NotFound();
 
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            if (curso.IdUsuarioAsesor != userId && !User.IsInRole("Administrador"))
+            {
+                return Forbid();
+            }
+
             return View(curso);
         }
 
@@ -162,10 +168,81 @@ namespace EduBoost.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var curso = await _context.Cursos.FindAsync(id);
-            if (curso != null) _context.Cursos.Remove(curso);
+            if (curso == null) return NotFound();
+
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            if (curso.IdUsuarioAsesor != userId && !User.IsInRole("Administrador"))
+            {
+                return Forbid();
+            }
+
+            // 1. Eliminar Materiales Completados relacionados
+            var materialIds = await _context.MaterialCurso
+                .Where(m => m.IdCurso == id)
+                .Select(m => m.IdMaterial)
+                .ToListAsync();
+
+            if (materialIds.Any())
+            {
+                var materialesCompletados = await _context.MaterialesCompletados
+                    .Where(mc => materialIds.Contains(mc.IdMaterial))
+                    .ToListAsync();
+                _context.MaterialesCompletados.RemoveRange(materialesCompletados);
+
+                // 2. Eliminar MaterialCurso
+                var materiales = await _context.MaterialCurso
+                    .Where(m => m.IdCurso == id)
+                    .ToListAsync();
+                _context.MaterialCurso.RemoveRange(materiales);
+            }
+
+            // 3. Eliminar Inscripciones
+            var inscripciones = await _context.Inscripciones
+                .Where(i => i.IdCurso == id)
+                .ToListAsync();
+            _context.Inscripciones.RemoveRange(inscripciones);
+
+            // 4. Eliminar Progreso
+            var progresos = await _context.Progresos
+                .Where(p => p.IdCurso == id)
+                .ToListAsync();
+            _context.Progresos.RemoveRange(progresos);
+
+            // 5. Eliminar Asesorias
+            var asesorias = await _context.Asesorias
+                .Where(a => a.IdCurso == id)
+                .ToListAsync();
+            _context.Asesorias.RemoveRange(asesorias);
+
+            // 6. Eliminar Evaluaciones y sus Preguntas y ResultadosEvaluacion
+            var evaluaciones = await _context.Evaluaciones
+                .Where(e => e.IdCurso == id)
+                .ToListAsync();
+
+            if (evaluaciones.Any())
+            {
+                var evalIds = evaluaciones.Select(e => e.IdEvaluacion).ToList();
+
+                var preguntas = await _context.Preguntas
+                    .Where(p => evalIds.Contains(p.IdEvaluacion))
+                    .ToListAsync();
+                _context.Preguntas.RemoveRange(preguntas);
+
+                var resultados = await _context.ResultadosEvaluacion
+                    .Where(r => evalIds.Contains(r.IdEvaluacion))
+                    .ToListAsync();
+                _context.ResultadosEvaluacion.RemoveRange(resultados);
+
+                _context.Evaluaciones.RemoveRange(evaluaciones);
+            }
+
+            // 7. Eliminar el Curso en sí
+            _context.Cursos.Remove(curso);
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            TempData["SuccessMessage"] = "Curso eliminado correctamente junto con todos sus contenidos y registros asociados.";
+            return RedirectToAction(nameof(MisCursos));
         }
 
         // POST: Cursos/Inscribirse/5

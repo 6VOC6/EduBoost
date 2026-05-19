@@ -19,7 +19,7 @@
                     Estás a punto de eliminar <strong>"@Model.Nombre"</strong>. Esta acción es permanente y eliminará todas las inscripciones asociadas.
                 </p>
 
-                <form asp-action="Delete">
+                <form asp-action="Delete" method="post">
                     <input type="hidden" asp-for="IdCurso" />
                     <div class="d-grid gap-3">
                         <button type="submit" class="btn btn-danger rounded-pill py-3 fw-bold shadow-sm">Sí, Eliminar Curso</button>
